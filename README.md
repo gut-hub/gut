@@ -2,12 +2,18 @@
 
 Collection of components that simplifies development workflow
 
-### Components:
-* gut - Core component
+## Components:
+* [gut](#gut) - Core component
 * [gut-color](#gut-color) - ANSI/VT100 color helpers
 * [gut-git](#gut-git) - Git utilities
 * [gut-kv](#gut-kv) - Key:Value store
 * [gut-menu](#gut-menu) - Creates a selectable menu
+
+## Install
+
+```
+$ curl -sSL https://github.com/jareddlc/gut/raw/master/install.sh | sh
+```
 
 ### gut
 Description: CLI for the Components

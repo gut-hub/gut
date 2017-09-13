@@ -32,7 +32,6 @@ if [ -e "$HOME/.bash_profile" ]; then
   else
     echo -e "${GRE}Sourcing gut in: ${YEL}$bash_profile${DEF}"
     echo "source $bash_gut" >> "$HOME/.bash_profile"
-    $(source "$bash_profile")
     echo -e ""
     echo -e "${BLU}Install complete${DEF}"
     echo -e "${GRE}Please open a new terminal or re-source the ${DEF}${YEL}.bash_profile ${DEF}${GRE}with the command below:${DEF}"
