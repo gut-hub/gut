@@ -18,6 +18,7 @@ _GUT_COLORS=("Black" "Red" "Green" "Yellow" "Blue" "Purple" "Cyan" "White")
 _GUT_F_COLORS=("30" "31" "32" "33" "34" "35" "36" "37")
 _GUT_B_COLORS=("40" "41" "42" "43" "44" "45" "46" "47")
 
+# Get - Retrieves the color code
 _gut_color_get() {
   local color=$(_gut_get "$HOME/gut.bdb" "gut_menu_color")
   local found=""
@@ -38,6 +39,7 @@ _gut_color_get() {
   fi
 }
 
+# Set - Stores the color code
 _gut_color_set() {
   # Prompt user for color
   _gut_menu _GUT_COLORS[@]
@@ -45,6 +47,48 @@ _gut_color_set() {
   local color="${_GUT_COLORS[indexColor]}"
 
   _gut_set "$HOME/gut.bdb" "gut_menu_color" "$color"
+}
+
+# Color - Change the color of text
+# Args:
+#   code - Color code
+_gut_color() {
+  local code=$1
+  local color_code=""
+
+  # Check arguments
+  if [ "$code" = "" ]; then
+    echo "[gut-color] No color provided"
+    return 1;
+  fi
+
+  # Set color code
+  case "$code" in
+    "fblack"  ) color_code="30";;
+    "fred"    ) color_code="31";;
+    "fgreen"  ) color_code="32";;
+    "fyellow" ) color_code="33";;
+    "fblue"   ) color_code="34";;
+    "fpurple" ) color_code="35";;
+    "fcyan"   ) color_code="36";;
+    "fwhite"  ) color_code="37";;
+    "bblack"  ) color_code="40";;
+    "bred"    ) color_code="41";;
+    "bgreen"  ) color_code="42";;
+    "byellow" ) color_code="43";;
+    "bblue"   ) color_code="44";;
+    "bpurple" ) color_code="45";;
+    "bcyan"   ) color_code="46";;
+    "bwhite"  ) color_code="47";;
+    "reset"   ) ;;
+    *         ) echo "[gut-color] Invalid color"; return 1;;
+  esac
+
+  if [ "$code" = "reset" ]; then
+    echo -e "\033[0m"
+  else
+    echo -e "\033[0;${color_code}m"
+  fi
 }
 
 # Foreground

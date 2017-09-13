@@ -1,10 +1,10 @@
 # gut
 
 # source
-source ~/Development/gut/gut-color.sh
-source ~/Development/gut/gut-git.sh
-source ~/Development/gut/gut-kv.sh
-source ~/Development/gut/gut-menu.sh
+source $HOME/gut-color.sh
+source $HOME/gut-git.sh
+source $HOME/gut-kv.sh
+source $HOME/gut-menu.sh
 
 # Main - Take user input and call the corresponding components
 # Args:

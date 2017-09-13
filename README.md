@@ -14,65 +14,42 @@ Description: CLI for the Components
 
 Example: `gut -h`
 
-### gut-kv
-
-##### Set
-Description: Store a value by key
-
-arguments:
-* filePath - location of the file to store
-* key - name of the key
-* value - value to store
-
-Example: `gut set "$HOME/gut.db" "hello" "world!"`
-
-##### Get
-Description: Retrieve value by key
-
-arguments:
-* filePath - location of the file to store
-* key - name of the key
-* value - value to store
-
-Example: `gut get "$HOME/gut.db" "hello"`
-
 ### gut-color
 
 Description: Set the color for gut text highlighting
 
 Example: `gut color`
 
-Available properties:
-* `_GUT_PS1_F_BLACK` - Black foreground
-* `_GUT_PS1_F_RED` - Red foreground
-* `_GUT_PS1_F_GREEN` - Green foreground
-* `_GUT_PS1_F_YELLOW` - Yellow foreground
-* `_GUT_PS1_F_BLUE` - Blue foreground
-* `_GUT_PS1_F_PURPLE` - Purple foreground
-* `_GUT_PS1_F_CYAN` - Cyan foreground
-* `_GUT_PS1_F_WHITE` - White foreground
+Use it in scripts:
+```
+echo "$(_gut_color fblue)Hello, gut"
+```
+
+Use it for the terminal PS1:
+```
+export PS1="$_GUT_PS1_F_RED\u"
+```
+
+Available colors (PS1 codes are used for `export PS1`):
+* `fblack || _GUT_PS1_F_BLACK` - Black foreground
+* `fred || _GUT_PS1_F_RED` - Red foreground
+* `fgreen || _GUT_PS1_F_GREEN` - Green foreground
+* `fyellow || _GUT_PS1_F_YELLOW` - Yellow foreground
+* `fblue || _GUT_PS1_F_BLUE` - Blue foreground
+* `fpurple || _GUT_PS1_F_PURPLE` - Purple foreground
+* `fcyan || _GUT_PS1_F_CYAN` - Cyan foreground
+* `fwhite || _GUT_PS1_F_WHITE` - White foreground
 * `_GUT_PS1_F_DEFAULT` - Default foreground
-* `_GUT_PS1_B_BLACK` - Black background
-* `_GUT_PS1_B_RED` - Red background
-* `_GUT_PS1_B_GREEN` - Green background
-* `_GUT_PS1_B_YELLOW` - Yellow background
-* `_GUT_PS1_B_BLUE` - Blue background
-* `_GUT_PS1_B_PURPLE` - Purple background
-* `_GUT_PS1_B_CYAN` - Cyan background
-* `_GUT_PS1_B_WHITE` - White background
+* `bblack || _GUT_PS1_B_BLACK` - Black background
+* `bred || _GUT_PS1_B_RED` - Red background
+* `bgreen || _GUT_PS1_B_GREEN` - Green background
+* `byellow || _GUT_PS1_B_YELLOW` - Yellow background
+* `bblue || _GUT_PS1_B_BLUE` - Blue background
+* `bpurple || _GUT_PS1_B_PURPLE` - Purple background
+* `bcyan || _GUT_PS1_B_CYAN` - Cyan background
+* `bwhite || _GUT_PS1_B_WHITE` - White background
 * `_GUT_PS1_B_DEFAULT` - Default background
-* `_GUT_PS1_RESET` - Resets color
-
-### gut-menu
-
-##### gut_menu
-Description: Creates a menu and prompts user for selection
-
-arguments:
-* array - array of strings to display on the menu
-
-Example: `_gut_menu git_remote_name_url_list[@]`
-
+* `reset || _GUT_PS1_RESET` - Resets color
 
 ### gut-git
 
@@ -105,3 +82,35 @@ fi
 # Runs after command is entered
 PROMPT_COMMAND="_gut_title_json; $_PROMPT_COMMAND"
 ```
+
+### gut-kv
+
+##### Set
+Description: Store a value by key
+
+arguments:
+* filePath - location of the file to store
+* key - name of the key
+* value - value to store
+
+Example: `gut set "$HOME/gut.db" "hello" "world!"`
+
+##### Get
+Description: Retrieve value by key
+
+arguments:
+* filePath - location of the file to store
+* key - name of the key
+* value - value to store
+
+Example: `gut get "$HOME/gut.db" "hello"`
+
+### gut-menu
+
+##### gut_menu
+Description: Creates a menu and prompts user for selection
+
+arguments:
+* array - array of strings to display on the menu
+
+Example: `_gut_menu git_remote_name_url_list[@]`
