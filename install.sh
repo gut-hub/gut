@@ -1,41 +1,53 @@
 # install
-
 GRE="\033[0;32m"
 YEL="\033[0;33m"
 BLU="\033[0;34m"
 DEF="\033[0;39m"
 RES="\033[0m"
 
+BASH_PROFILE="$HOME/.bash_profile"
+BASH_RC="$HOME/.bashrc"
+GUT_HOME='$HOME/gut.sh'
+
+download() {
+  local fileName=$1
+
+  echo -e "${GRE}Downloading: ${YEL}${fileName}${DEF}"
+  curl -sSL https://github.com/jareddlc/gut/raw/master/${fileName} -o $HOME/${fileName}
+}
+
+install() {
+  local dest=$1
+  found=$(grep "$GUT_HOME" "$dest")
+  if [ ! "$found" ]; then
+    echo ""
+    echo -e "${BLU}Installing gut in: ${YEL}$dest${DEF}"
+    echo "source $GUT_HOME" >> "$dest"
+
+    echo -e "${GRE}Please open a new terminal or re-source the ${DEF}${YEL}${dest} ${DEF}${GRE}with the command below:${DEF}"
+    echo ""
+    echo -e "    $ source $dest"
+    echo ""
+  fi
+  echo -e "${BLU}Install complete${DEF}"
+}
+
 echo -e "${BLU}Installing gut${DEF}"
-echo -e "${GRE}Downloading: ${YEL}gut-color.sh${DEF}"
 
-$(curl -L https://github.com/jareddlc/gut/raw/master/gut-color.sh 2>/dev/null > $HOME/gut-color.sh)
-
-echo -e "${GRE}Downloading: ${YEL}gut-git.sh${DEF}"
-$(curl -L https://github.com/jareddlc/gut/raw/master/gut-git.sh 2>/dev/null > $HOME/gut-git.sh)
-
-echo -e "${GRE}Downloading: ${YEL}gut-kv.sh${DEF}"
-$(curl -L https://github.com/jareddlc/gut/raw/master/gut-color.sh 2>/dev/null > $HOME/gut-kv.sh)
-
-echo -e "${GRE}Downloading: ${YEL}gut.sh${DEF}"
-$(curl -L https://github.com/jareddlc/gut/raw/master/gut.sh 2>/dev/null > $HOME/gut.sh)
+download "gut-color.sh"
+download "gut-git.sh"
+download "gut-kv.sh"
+download "gut-menu.sh"
+download "gut.sh"
 
 echo -e "${GRE}Download complete${DEF}"
 
-bash_profile="$HOME/.bash_profile"
-bash_gut='$HOME/gut.sh'
-echo -e "${BLU}Checking: ${YEL}$bash_profile${DEF}"
-if [ -e "$HOME/.bash_profile" ]; then
-  found=$(grep "$bash_gut" "$bash_profile")
-  if [ "$found" ]; then
-    echo -e "${YEL}gut already sourced${RES}"
-  else
-    echo -e "${GRE}Sourcing gut in: ${YEL}$bash_profile${DEF}"
-    echo "source $bash_gut" >> "$HOME/.bash_profile"
-    echo -e ""
-    echo -e "${BLU}Install complete${DEF}"
-    echo -e "${GRE}Please open a new terminal or re-source the ${DEF}${YEL}.bash_profile ${DEF}${GRE}with the command below:${DEF}"
-    echo ""
-    echo '"source $HOME/.bash_profile"'
-  fi
+if [ -e "$BASH_PROFILE" ]; then
+  install "$BASH_PROFILE"
+elif [ -e "$BASH_RC" ]; then
+  install "$BASH_RC"
+else
+  echo -e "${BLU}Did not find a .bashrc or .bash_profile${DEF}"
+  echo -e "${YEL}To use gut, source with the command below:${RES}"
+  echo -e "source $GUT_HOME"
 fi
