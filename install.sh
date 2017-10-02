@@ -9,13 +9,6 @@ BASH_PROFILE="$HOME/.bash_profile"
 BASH_RC="$HOME/.bashrc"
 GUT_HOME='$HOME/gut.sh'
 
-download() {
-  local fileName=$1
-
-  echo -e "${GRE}Downloading: ${YEL}${fileName}${DEF}"
-  curl -sSL https://github.com/jareddlc/gut/raw/master/${fileName} -o $HOME/${fileName}
-}
-
 install() {
   local dest=$1
   found=$(grep "$GUT_HOME" "$dest")
@@ -33,14 +26,7 @@ install() {
 }
 
 echo -e "${BLU}Installing gut${DEF}"
-
-download "gut-color.sh"
-download "gut-git.sh"
-download "gut-kv.sh"
-download "gut-menu.sh"
-download "gut.sh"
-
-echo -e "${GRE}Download complete${DEF}"
+curl -sSL "https://github.com/jareddlc/gut/raw/master/gut-update.sh" | sh
 
 if [ -e "$BASH_PROFILE" ]; then
   install "$BASH_PROFILE"
