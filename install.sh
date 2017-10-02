@@ -26,7 +26,7 @@ install() {
 }
 
 echo -e "${BLU}Installing gut${DEF}"
-curl -sSL "https://github.com/jareddlc/gut/raw/master/gut-update.sh" | sh
+eval "$(curl -sSL "https://github.com/jareddlc/gut/raw/master/gut-update.sh")" && _gut_update
 
 if [ -e "$BASH_PROFILE" ]; then
   install "$BASH_PROFILE"
