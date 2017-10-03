@@ -5,6 +5,7 @@ source $HOME/gut-color.sh
 source $HOME/gut-git.sh
 source $HOME/gut-kv.sh
 source $HOME/gut-menu.sh
+source $HOME/gut-update.sh
 
 # Main - Take user input and call the corresponding components
 # Args:
@@ -28,6 +29,8 @@ gut() {
     _gut_push
   elif [ "$1" = "reset" ]; then
     _gut_reset
+  elif [ "$1" = "update" ]; then
+    _gut_update
   else
     echo "[gut] Invalid command"
     _gut_help
@@ -50,6 +53,7 @@ _gut_help() {
   echo "pull          Performs a git pull on the selected remote branch"
   echo "push          Performs a git push on the selected remote branch"
   echo "reset         Performs a git reset --soft to the selected git hash"
+  echo "update        Performs an update to retrieve the latest version of gut"
   echo ""
 }
 
