@@ -7,6 +7,8 @@ source $HOME/gut-kv.sh
 source $HOME/gut-menu.sh
 source $HOME/gut-update.sh
 
+_GUT_COMMANDS="color get set fetch log pull push reset update"
+
 # Main - Take user input and call the corresponding components
 # Args:
 #   string - component to execute
@@ -59,14 +61,13 @@ _gut_help() {
 
 # Completion - Add tab completion
 _gut_completion() {
-  local cur prev commands
+  local cur prev
 
   COMPREPLY=()
   cur="${COMP_WORDS[COMP_CWORD]}"
   prev="${COMP_WORDS[COMP_CWORD-1]}"
-  commands="fetch pull push reset"
 
-  COMPREPLY=( $(compgen -W "${commands}" -- ${cur}) )
+  COMPREPLY=( $(compgen -W "${_GUT_COMMANDS}" -- ${cur}) )
 
   return 0
 }
