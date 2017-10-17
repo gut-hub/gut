@@ -28,7 +28,7 @@ _gut_fetch() {
   local index_remote=$?
 
   # Run git command
-  git fetch "${git_remote_name_list[$index_remote]}"
+  git fetch --tags "${git_remote_name_list[$index_remote]}"
 
   # Restore IFS
   IFS=$SAVEIFS

@@ -7,34 +7,25 @@ source $HOME/gut-kv.sh
 source $HOME/gut-menu.sh
 source $HOME/gut-update.sh
 
-_GUT_COMMANDS="color get set fetch log pull push reset update"
+_GUT_COMMANDS=("color" "get" "set" "fetch" "log" "pull" "push" "reset" "update")
+_GUT_COMMANDS_COMPLETION="color get set fetch log pull push reset update"
+_GUT_COMMANDS_FUNCTIONS=("_gut_color_set" "_gut_get" "_gut_set" "_gut_fetch" "_gut_log" "_gut_pull" "_gut_push" "_gut_reset" "_gut_update")
 
 # Main - Take user input and call the corresponding components
 # Args:
 #   string - component to execute
 gut() {
-  if [ "$1" = "-h" ]; then
-    _gut_help
-  elif [ "$1" = "color" ]; then
-    _gut_color_set
-  elif [ "$1" = "get" ]; then
-    _gut_get "${@:2}"
-  elif [ "$1" = "set" ]; then
-    _gut_set "${@:2}"
-  elif [ "$1" = "fetch" ]; then
-    _gut_fetch
-  elif [ "$1" = "log" ]; then
-    _gut_log
-  elif [ "$1" = "pull" ]; then
-    _gut_pull
-  elif [ "$1" = "push" ]; then
-    _gut_push
-  elif [ "$1" = "reset" ]; then
-    _gut_reset
-  elif [ "$1" = "update" ]; then
-    _gut_update
+  # Iterate over commands array
+  for i in "${!_GUT_COMMANDS[@]}"; do
+    if [ "$1" = "${_GUT_COMMANDS[$i]}" ]; then
+      ${_GUT_COMMANDS_FUNCTIONS[$i]} "${@:2}"
+      return 0
+    fi
+  done
+
+  if [ "$1" != "-h" ]; then
+    echo "[gut] invalid command. see help for usage: $ gut -h"
   else
-    echo "[gut] Invalid command"
     _gut_help
   fi
 }
@@ -67,7 +58,7 @@ _gut_completion() {
   cur="${COMP_WORDS[COMP_CWORD]}"
   prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-  COMPREPLY=( $(compgen -W "${_GUT_COMMANDS}" -- ${cur}) )
+  COMPREPLY=( $(compgen -W "${_GUT_COMMANDS_COMPLETION}" -- ${cur}) )
 
   return 0
 }
