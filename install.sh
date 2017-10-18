@@ -10,6 +10,11 @@ BASH_RC="$HOME/.bashrc"
 GUT_DIR="${GUT_HOME:-$HOME/.gut}"
 GUT_SH='$GUT_HOME/gut.sh'
 
+if [ ! -d "$GUT_DIR" ]; then
+  echo -e "${BLU}Creating directory: ${GUT_DIR}${DEF}"
+  mkdir "${GUT_DIR}"
+fi
+
 install() {
   local dest=$1
   found=$(grep "$GUT_SH" "$dest")
