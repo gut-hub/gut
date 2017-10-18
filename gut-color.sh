@@ -1,4 +1,5 @@
 # gut-color
+GUT_DIR="${GUT_HOME:-$HOME/.gut}"
 
 # Text attributes
 # 0 - All attributes off
@@ -20,7 +21,7 @@ _GUT_B_COLORS=("40" "41" "42" "43" "44" "45" "46" "47")
 
 # Get - Retrieves the color code
 _gut_color_get() {
-  local color=$(_gut_get "$HOME/gut.bdb" "gut_menu_color")
+  local color=$(_gut_get "$GUT_DIR/gut.bdb" "gut_menu_color")
   local found=""
 
   # Iterate over colors array
@@ -46,7 +47,7 @@ _gut_color_set() {
   local indexColor=$?
   local color="${_GUT_COLORS[indexColor]}"
 
-  _gut_set "$HOME/gut.bdb" "gut_menu_color" "$color"
+  _gut_set "$GUT_DIR/gut.bdb" "gut_menu_color" "$color"
 }
 
 # Color - Change the color of text

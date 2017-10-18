@@ -5,6 +5,8 @@ GRE="\033[0;32m"
 YEL="\033[0;33m"
 DEF="\033[0;39m"
 
+GUT_DIR="${GUT_HOME:-$HOME/.gut}"
+
 # Update - Function to update local gut version
 _gut_update() {
   _gut_update_download "gut-color.sh"
@@ -17,7 +19,7 @@ _gut_update() {
 }
 
 # Download - Pulls a file directly from GitHub
-_gut_update_download () {
+_gut_update_download() {
   echo -e "${GRE}Downloading: ${YEL}$1${DEF}"
-  curl -sSL "https://github.com/jareddlc/gut/raw/master/$1" -o $HOME/$1
+  curl -sSL "https://github.com/jareddlc/gut/raw/master/$1" -o $GUT_DIR/$1
 }

@@ -1,14 +1,20 @@
-# install
+# gut-dev
+
+# Globals
 GRE="\033[0;32m"
 YEL="\033[0;33m"
-BLU="\033[0;34m"
 DEF="\033[0;39m"
-RES="\033[0m"
 
 BASH_PROFILE="$HOME/.bash_profile"
 BASH_RC="$HOME/.bashrc"
 GUT_DIR="${GUT_HOME:-$HOME/.gut}"
 GUT_SH='$GUT_HOME/gut.sh'
+
+echo "$GUT_DIR"
+if [ ! -d "$GUT_DIR" ]; then
+  echo -e "${BLU}Creating directory: ${GUT_DIR}${DEF}"
+  mkdir "${GUT_DIR}"
+fi
 
 install() {
   local dest=$1
@@ -27,8 +33,18 @@ install() {
   echo -e "${BLU}Install complete${DEF}"
 }
 
-echo -e "${BLU}Installing gut${DEF}"
-eval "$(curl -sSL "https://github.com/jareddlc/gut/raw/master/gut-update.sh")" && _gut_update
+copy_file() {
+  echo -e "${GRE}Copying: ${YEL}$1${DEF}"
+  cp "$1" $GUT_DIR/$1
+}
+
+copy_file "gut-color.sh"
+copy_file "gut-git.sh"
+copy_file "gut-kv.sh"
+copy_file "gut-menu.sh"
+copy_file "gut-update.sh"
+copy_file "gut.sh"
+echo -e "${GRE}Copy complete${DEF}"
 
 if [ -e "$BASH_PROFILE" ]; then
   install "$BASH_PROFILE"

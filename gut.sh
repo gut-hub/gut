@@ -1,11 +1,12 @@
 # gut
+GUT_DIR="${GUT_HOME:-$HOME/.gut}"
 
 # source
-source $HOME/gut-color.sh
-source $HOME/gut-git.sh
-source $HOME/gut-kv.sh
-source $HOME/gut-menu.sh
-source $HOME/gut-update.sh
+source $GUT_DIR/gut-color.sh
+source $GUT_DIR/gut-git.sh
+source $GUT_DIR/gut-kv.sh
+source $GUT_DIR/gut-menu.sh
+source $GUT_DIR/gut-update.sh
 
 _GUT_COMMANDS=("color" "get" "set" "fetch" "log" "pull" "push" "reset" "update")
 _GUT_COMMANDS_COMPLETION="color get set fetch log pull push reset update"
