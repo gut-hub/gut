@@ -225,8 +225,11 @@ _gut_git_ps1_branch_current() {
     echo "${branch}"
   else
     # fallback
-    local ref=$(git symbolic-ref HEAD | awk -F refs/heads/ '{ print $2; }')
-    echo "${ref}"
+    local ref=$(git symbolic-ref HEAD 2>/dev/null | awk -F refs/heads/ '{ print $2; }')
+
+    if [[ -n ${ref} ]]; then
+      echo "${ref}"
+    fi
   fi
 }
 
