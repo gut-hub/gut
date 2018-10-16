@@ -6,8 +6,21 @@ Collection of components that simplifies development workflow
 * [gut](#gut) - Core component
 * [gut-color](#gut-color) - ANSI/VT100 color helpers
 * [gut-git](#gut-git) - Git utilities
-* [gut-kv](#gut-kv) - Key:Value store
+* [gut-kv](#gut-kv) - Key/Value store
 * [gut-menu](#gut-menu) - Creates a selectable menu
+
+## Dependencies:
+* curl
+* awk
+* read
+* echo
+* base64
+* git
+* grep
+* cat
+* tr
+* wc
+* sed
 
 ## Install
 
@@ -15,108 +28,71 @@ Collection of components that simplifies development workflow
 $ curl -sSL https://github.com/jareddlc/gut/raw/master/install.sh | sh
 ```
 
-### gut
-Description: CLI for the Components
+This will create the env `$GUT_HOME` which defaults to `$HOME/.gut`
 
-Example: `gut -h`
+### gut
+CLI for the Components
+
+Usage: `gut -h`
 
 ### gut-color
 
-Description: Set the color for gut text highlighting
+ANSI/VT100 Color codes for scripts or terminal
 
-Example: `gut color`
+Available colors:
 
-Use it in scripts:
-```
-echo "$(_gut_color fblue)Hello, gut"
-```
-
-Use it for the terminal PS1:
-```
-export PS1="$_GUT_PS1_F_RED\u"
-```
-
-Available colors (PS1 codes are used for `export PS1`):
-* `fblack || _GUT_PS1_F_BLACK` - Black foreground
-* `fred || _GUT_PS1_F_RED` - Red foreground
-* `fgreen || _GUT_PS1_F_GREEN` - Green foreground
-* `fyellow || _GUT_PS1_F_YELLOW` - Yellow foreground
-* `fblue || _GUT_PS1_F_BLUE` - Blue foreground
-* `fpurple || _GUT_PS1_F_PURPLE` - Purple foreground
-* `fcyan || _GUT_PS1_F_CYAN` - Cyan foreground
-* `fwhite || _GUT_PS1_F_WHITE` - White foreground
-* `_GUT_PS1_F_DEFAULT` - Default foreground
-* `bblack || _GUT_PS1_B_BLACK` - Black background
-* `bred || _GUT_PS1_B_RED` - Red background
-* `bgreen || _GUT_PS1_B_GREEN` - Green background
-* `byellow || _GUT_PS1_B_YELLOW` - Yellow background
-* `bblue || _GUT_PS1_B_BLUE` - Blue background
-* `bpurple || _GUT_PS1_B_PURPLE` - Purple background
-* `bcyan || _GUT_PS1_B_CYAN` - Cyan background
-* `bwhite || _GUT_PS1_B_WHITE` - White background
-* `_GUT_PS1_B_DEFAULT` - Default background
-* `reset || _GUT_PS1_RESET` - Resets color
+| Color  | Foreground                                | Background                                |
+| ------ | ----------------------------------------- | ----------------------------------------- |
+| Black  | bash: `fblack`, PS1: `_GUT_PS1_F_BLACK`   | bash: `bblack`, PS1: `_GUT_PS1_B_BLACK`   |
+| Red    | bash: `fred`, PS1: `_GUT_PS1_F_RED`       | bash: `bred`, PS1: `_GUT_PS1_B_`          |
+| Green  | bash: `fgreen`, PS1: `_GUT_PS1_F_GREEN`   | bash: `bgreen`, PS1: `_GUT_PS1_B_`        |
+| Yellow | bash: `fyellow`, PS1: `_GUT_PS1_F_YELLOW` | bash: `byellow`, PS1: `_GUT_PS1_B_YELLOW` |
+| Blue   | bash: `fblue`, PS1: `_GUT_PS1_F_BLUE`     | bash: `bblue`, PS1: `_GUT_PS1_B_BLUE`     |
+| Purple | bash: `fpurple`, PS1: `_GUT_PS1_F_PURPLE` | bash: `bpurple`, PS1: `_GUT_PS1_B_PURPLE` |
+| Cyan   | bash: `fcyan`, PS1: `_GUT_PS1_F_CYAN`     | bash: `bcyan`, PS1: `_GUT_PS1_B_CYAN`     |
+| White  | bash: `fwhite`, PS1: `_GUT_PS1_F_WHITE`   | bash: `bwhite`, PS1: `_GUT_PS1_B_WHITE`   |
+| Default| PS1: `_GUT_PS1_F_DEFAULT`                 | PS1: `_GUT_PS1_B_DEFAULT`                 |
+| Reset  | PS1: `_GUT_PS1_RESET`                     | PS1: `_GUT_PS1_RESET`                     |
 
 ### gut-git
 
-##### gut_log
-Description: Condensed version of `git log`
-
-##### gut_fetch
-Description: Prompts user for a remote repo to `git fetch`
-
-##### gut_pull
-Description: Prompts user for a git remote repo and branch to `git pull`
-
-##### gut_push
-Description: Prompts user for a git remote repo and `git push` current branch
-
-##### gut_reset
-Description: Prompts user for git hash to `git reset --soft`
-
-##### More
-
-* `_gut_title_json` - Sets the terminal's title with git info
-* `_gut_status_short` - Prints a short summary of `git status` using single characters
-* ...look at the source for more git utilities
+Easier git workflows
 
 ```bash
 # Save current PROMPT_COMMAND
-if [[ ${PROMPT_COMMAND} != *"_gut_title_json"* ]]; then
+if [[ ${PROMPT_COMMAND} != *"_gut_git_title_json"* ]]; then
   _PROMPT_COMMAND=$PROMPT_COMMAND
 fi
 # Runs after command is entered
-PROMPT_COMMAND="_gut_title_json; $_PROMPT_COMMAND"
+PROMPT_COMMAND="_gut_git_title_json; $_PROMPT_COMMAND"
 ```
 
 ### gut-kv
 
-##### Set
-Description: Store a value by key
+Key/Value store
 
-arguments:
-* filePath - location of the file to store
-* key - name of the key
-* value - value to store
-
-Example: `gut set "$HOME/gut.db" "hello" "world!"`
-
-##### Get
-Description: Retrieve value by key
-
-arguments:
-* filePath - location of the file to store
-* key - name of the key
-* value - value to store
-
-Example: `gut get "$HOME/gut.db" "hello"`
 
 ### gut-menu
 
-##### gut_menu
-Description: Creates a menu and prompts user for selection
+Creates a menu and prompts user for selection
 
-arguments:
-* array - array of strings to display on the menu
 
-Example: `_gut_menu git_remote_name_url_list[@]`
+### Contributing
+Want to contribute to the project? I've described the style guide for submiting pull requests.
+
+#### Style guide
+
+* Functions names are written in `snake_case` and must start with filename: `myfile_myfunction() {...}`
+* Strings are enclosed with braces: `${my_string}`
+* Variables are written in 'snake_case'
+* Variable assignments via functions are called using subshells: `local encoded_key=$(echo "${key}" | base64)`
+* Local variable names are written in lowercase
+* Global variable names are written in uppercase
+
+#### Docs
+
+```
+# Function summary
+# @param {type} name - Description
+function_name() {...}
+```
