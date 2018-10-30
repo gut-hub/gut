@@ -12,18 +12,42 @@ source ${GUT_DIR}/gut-kv.sh
 source ${GUT_DIR}/gut-menu.sh
 source ${GUT_DIR}/gut-update.sh
 
-_GUT_COMMANDS=("color" "get" "set" "fetch" "log" "pull" "push" "reset" "update" "version")
 _GUT_COMMANDS_COMPLETION="color get set fetch log pull push reset update version"
-_GUT_COMMANDS_FUNCTIONS=("_gut_color_prompt" "_gut_kv_get" "_gut_kv_set" "_gut_git_fetch" "_gut_git_log_colored" "_gut_git_pull" "_gut_git_push" "_gut_git_reset" "_gut_update" "_gut_version")
+
+GUT_FUNCTIONS=()
+GUT_NAMES=()
+GUT_DESCRIPTIONS=()
 
 # Main
 # @param {string} command - Command to execute
 gut() {
-  # Iterate over commands array
-  for i in "${!_GUT_COMMANDS[@]}"; do
-    if [ "${1}" = "${_GUT_COMMANDS[$i]}" ]; then
-      ${_GUT_COMMANDS_FUNCTIONS[$i]} "${@:2}"
-      return 0
+  # get plugins
+  _gut_plugins
+
+  # backup IFS
+  savedIFS=$IFS
+  IFS='"'
+
+  # recreate array
+  funcs=($( echo "${GUT_FUNCTIONS[*]}"))
+  names=($( echo "${GUT_NAMES[*]}"))
+  descs=($( echo "${GUT_DESCRIPTIONS[*]}"))
+
+  # restore IFS
+  IFS=$savedIFS
+
+  # Iterate over names array
+  for i in "${!names[@]}"; do
+    # check for null strings
+    if [[ -n ${names[$i]} ]]; then
+      # check for whitespace
+      if [ ${#names[$i]} -ge 2 ]; then
+        if [ "${1}" = "${names[$i]}" ]; then
+          # call functions
+          ${funcs[$i]} "${@:2}"
+          return 0
+        fi
+      fi
     fi
   done
 
@@ -38,26 +62,42 @@ gut() {
 
 # Displays help menu
 _gut_help() {
+  # get plugins
+  _gut_plugins
+
+  # backup IFS
+  savedIFS=$IFS
+  IFS='"'
+
+  # recreate array
+  funcs=($( echo "${GUT_FUNCTIONS[*]}"))
+  names=($( echo "${GUT_NAMES[*]}"))
+  descs=($( echo "${GUT_DESCRIPTIONS[*]}"))
+
+  # restore IFS
+  IFS=$savedIFS
+
+  # displays plugins
   echo "usage: gut [command]"
   echo ""
   echo "commands:"
   echo ""
-  echo "color         Set the color for gut text highlighting"
-  echo ""
-  echo "get           Get key"
-  echo "set           Set key"
-  echo ""
-  echo "fetch         Performs a git fetch on the selected remote repo"
-  echo "log           Performs a git log"
-  echo "pull          Performs a git pull on the selected remote branch"
-  echo "push          Performs a git push on the selected remote branch"
-  echo "reset         Performs a git reset --soft to the selected git hash"
-  echo "update        Performs an update to retrieve the latest version of gut"
-  echo "version       Shows the version of gut"
+
+  # Iterate over function names array
+  for i in "${!names[@]}"; do
+    # check for null strings
+    if [[ -n ${names[$i]} ]]; then
+      # check for whitespace
+      if [ ${#names[$i]} -ge 2 ]; then
+        _gut_column_echo "${names[$i]}" "${descs[$i]}" "20"
+      fi
+    fi
+  done
+
   echo ""
 }
 
-# Displays version of gut
+# Displays the version of gut
 _gut_version() {
   echo "v${GUT_VER}"
 }
@@ -69,6 +109,7 @@ _gut_plugins() {
   local list=($(ls -al ${GUT_DIR} | awk '{ print $9 }'))
   declare -a files=()
 
+  # iterate over files in GUT_DIR
   for i in "${!list[@]}"; do
     # Don't add if the filename is in the exclude list
     let add=0;
@@ -85,25 +126,46 @@ _gut_plugins() {
     fi
   done
 
-  declare -a functions=()
-  declare -a names=()
+  declare -a gut_functions=()
+  declare -a gut_names=()
+  declare -a gut_descriptions=()
 
+  # iterate over valid files
   for i in "${!files[@]}"; do
     # Source the files
     source "${GUT_DIR}/${files[$i]}"
 
-    # Get plugin functions and names
-    local f=$(cat "${GUT_DIR}/${files[$i]}" | grep "_GUT_EXPORT_FUNCTIONS")
-    local n=$(cat "${GUT_DIR}/${files[$i]}" | grep "_GUT_EXPORT_NAMES")
+    # Get plugin functions, names, and descriptions
+    local funcs=$(cat "${GUT_DIR}/${files[$i]}" | grep "GUT_EXPORT_FUNCTIONS")
+    local names=$(cat "${GUT_DIR}/${files[$i]}" | grep "GUT_EXPORT_NAMES")
+    local descs=$(cat "${GUT_DIR}/${files[$i]}" | grep "GUT_EXPORT_DESCRIPTIONS")
 
-    # eval $f
-    # echo "$_GUT_EXPORT_FUNCTIONS"
+    if [[ -n ${funcs} ]]; then
+      local f=$(echo "${funcs}" | awk -F "[()]" '{print $2}')
+      gut_functions+=("${f}")
+    fi
 
+    if [[ -n ${names} ]]; then
+      local n=$(echo ${names} | awk -F "[()]" '{print $2}')
+      gut_names+=("${n}")
+    fi
+
+    if [[ -n ${descs} ]]; then
+      local d=$(echo ${descs} | awk -F "[()]" '{print $2}')
+      gut_descriptions+=("${d}")
+    fi
   done
-}
 
-# Run plugins (Disabled until completed)
-# _gut_plugins
+  # add version
+  gut_functions+=("_gut_version")
+  gut_names+=("version")
+  gut_descriptions+=("Displays the version of gut")
+
+  # override global vars
+  GUT_FUNCTIONS=("${gut_functions[@]}")
+  GUT_NAMES=("${gut_names[@]}")
+  GUT_DESCRIPTIONS=("${gut_descriptions[@]}")
+}
 
 # Completion - Tab completion
 _gut_completion() {

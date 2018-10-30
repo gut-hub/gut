@@ -5,6 +5,7 @@ Collection of components that simplifies development workflow
 ## Components:
 * [gut](#gut) - Core component
 * [gut-color](#gut-color) - ANSI/VT100 color helpers
+* [gut-column](#gut-color) - Creates text columns
 * [gut-git](#gut-git) - Git utilities
 * [gut-kv](#gut-kv) - Key/Value store
 * [gut-menu](#gut-menu) - Creates a selectable menu
@@ -54,6 +55,10 @@ Available colors:
 | Default| PS1: `_GUT_PS1_F_DEFAULT`                 | PS1: `_GUT_PS1_B_DEFAULT`                 |
 | Reset  | PS1: `_GUT_PS1_RESET`                     | PS1: `_GUT_PS1_RESET`                     |
 
+### gut-column
+
+Creates text column output
+
 ### gut-git
 
 Easier git workflows
@@ -79,6 +84,22 @@ Creates a menu and prompts user for selection
 
 ### Contributing
 Want to contribute to the project? I've described the style guide for submiting pull requests.
+
+#### Plugins
+
+Gut has a simple "plugin" support in which it will attempt to read files placed in the `$GUT_HOME` directory and look for the following lines:
+
+* GUT_EXPORT_FUNCTIONS - exact name of the function as written in the plugin
+* GUT_EXPORT_NAMES - name that will appear in the gut help menu
+* GUT_EXPORT_DESCRIPTIONS - description that will appear in the gut help menu
+
+Here is an example of the "update plugin"
+
+```bash
+GUT_EXPORT_FUNCTIONS=("_gut_update")
+GUT_EXPORT_NAMES=("update")
+GUT_EXPORT_DESCRIPTIONS=("Updates gut")
+```
 
 #### Style guide
 

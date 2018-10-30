@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# Vars
+GUT_EXPORT_FUNCTIONS=("_gut_git_log_colored" "_gut_git_fetch" "_gut_git_pull" "_gut_git_push" "_gut_git_reset")
+GUT_EXPORT_NAMES=("log" "fetch" "pull" "push" "reset")
+GUT_EXPORT_DESCRIPTIONS=("Displays the git log" "Fetches the selected remote repo" "Pulls the selected remote branch" "Pushes the current branch to the selected remote repo" "Soft resets on the selected git hash")
+
 # Prints the git log
 _gut_git_log_colored() {
   # Git format placeholders
