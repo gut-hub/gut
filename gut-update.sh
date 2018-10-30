@@ -8,9 +8,14 @@ DEF="\033[0;39m"
 # Vars
 GUT_DIR="${GUT_HOME:-$HOME/.gut}"
 
+GUT_EXPORT_FUNCTIONS=("_gut_update")
+GUT_EXPORT_NAMES=("update")
+GUT_EXPORT_DESCRIPTIONS=("Updates gut")
+
 # Updates gut
 _gut_update() {
   _gut_update_download "gut-color.sh"
+  _gut_update_download "gut-column.sh"
   _gut_update_download "gut-git.sh"
   _gut_update_download "gut-kv.sh"
   _gut_update_download "gut-menu.sh"

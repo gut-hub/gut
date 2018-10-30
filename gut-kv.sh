@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# Vars
+GUT_EXPORT_FUNCTIONS=("_gut_kv_get" "_gut_kv_set")
+GUT_EXPORT_NAMES=("get" "set")
+GUT_EXPORT_DESCRIPTIONS=("Retrieves a key/value string" "Stores a key/value string")
+
 # Stores a key/value string
 # @param {string} file_path - Location of file to store
 # @param {string} key - Key to store

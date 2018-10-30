@@ -5,6 +5,10 @@ GUT_DIR="${GUT_HOME:-$HOME/.gut}"
 GUT_DB="gut.bdb"
 GUT_COLOR_KEY="gut_color_key"
 
+GUT_EXPORT_FUNCTIONS=("_gut_color_prompt")
+GUT_EXPORT_NAMES=("color")
+GUT_EXPORT_DESCRIPTIONS=("Sets the color of gut prompt")
+
 _GUT_COLORS=("Black" "Red" "Green" "Yellow" "Blue" "Purple" "Cyan" "White")
 _GUT_F_COLORS=("30" "31" "32" "33" "34" "35" "36" "37")
 _GUT_B_COLORS=("40" "41" "42" "43" "44" "45" "46" "47")
