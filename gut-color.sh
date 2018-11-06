@@ -52,6 +52,21 @@ _GUT_PS1_RESET='\[\e[0m\]'
 
 # Example: "\[\e[0;32;40m\]\h" Normal;Green foreground; Black background
 
+# Available colors:
+
+# | Color  | Foreground                                | Background                                |
+# | ------ | ----------------------------------------- | ----------------------------------------- |
+# | Black  | bash: `fblack`, PS1: `_GUT_PS1_F_BLACK`   | bash: `bblack`, PS1: `_GUT_PS1_B_BLACK`   |
+# | Red    | bash: `fred`, PS1: `_GUT_PS1_F_RED`       | bash: `bred`, PS1: `_GUT_PS1_B_`          |
+# | Green  | bash: `fgreen`, PS1: `_GUT_PS1_F_GREEN`   | bash: `bgreen`, PS1: `_GUT_PS1_B_`        |
+# | Yellow | bash: `fyellow`, PS1: `_GUT_PS1_F_YELLOW` | bash: `byellow`, PS1: `_GUT_PS1_B_YELLOW` |
+# | Blue   | bash: `fblue`, PS1: `_GUT_PS1_F_BLUE`     | bash: `bblue`, PS1: `_GUT_PS1_B_BLUE`     |
+# | Purple | bash: `fpurple`, PS1: `_GUT_PS1_F_PURPLE` | bash: `bpurple`, PS1: `_GUT_PS1_B_PURPLE` |
+# | Cyan   | bash: `fcyan`, PS1: `_GUT_PS1_F_CYAN`     | bash: `bcyan`, PS1: `_GUT_PS1_B_CYAN`     |
+# | White  | bash: `fwhite`, PS1: `_GUT_PS1_F_WHITE`   | bash: `bwhite`, PS1: `_GUT_PS1_B_WHITE`   |
+# | Default| PS1: `_GUT_PS1_F_DEFAULT`                 | PS1: `_GUT_PS1_B_DEFAULT`                 |
+# | Reset  | PS1: `_GUT_PS1_RESET`                     | PS1: `_GUT_PS1_RESET`                     |
+
 # Retrieves the gut color key from ENV
 _gut_color_get_env() {
   # get color from ENV if found

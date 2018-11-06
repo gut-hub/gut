@@ -4,50 +4,42 @@
 GUT_DIR="${GUT_HOME:-$HOME/.gut}"
 GUT_VER="0.1.0"
 
-# Source
-source ${GUT_DIR}/gut-color.sh
-source ${GUT_DIR}/gut-column.sh
-source ${GUT_DIR}/gut-git.sh
-source ${GUT_DIR}/gut-kv.sh
-source ${GUT_DIR}/gut-menu.sh
-source ${GUT_DIR}/gut-update.sh
-
-_GUT_COMMANDS_COMPLETION="color get set fetch log pull push reset update version"
-
-GUT_FUNCTIONS=()
-GUT_NAMES=()
-GUT_DESCRIPTIONS=()
+GUT_ENV_FUNCTIONS="GUT_FUNCS"
+GUT_ENV_NAMES="GUT_NAMES"
+GUT_ENV_DESCRIPTIONS="GUT_DESCS"
 
 # Main
 # @param {string} command - Command to execute
 gut() {
-  # get plugins
-  _gut_plugins
+  # get plugins from ENV
+  if [[ -n ${!GUT_ENV_FUNCTIONS} ]]; then
+    # no-op
+    echo -n ""
+  else
+    # get plugins
+    _gut_load_plugins
+  fi
 
   # backup IFS
   savedIFS=$IFS
-  IFS='"'
+  IFS=':'
 
-  # recreate array
-  funcs=($( echo "${GUT_FUNCTIONS[*]}"))
-  names=($( echo "${GUT_NAMES[*]}"))
-  descs=($( echo "${GUT_DESCRIPTIONS[*]}"))
+  funcs=($(echo "${!GUT_ENV_FUNCTIONS}"))
+  names=($(echo "${!GUT_ENV_NAMES}"))
+  descs=($(echo "${!GUT_ENV_DESCRIPTIONS}"))
 
   # restore IFS
   IFS=$savedIFS
 
-  # Iterate over names array
+  # iterate over array
   for i in "${!names[@]}"; do
-    # check for null strings
-    if [[ -n ${names[$i]} ]]; then
-      # check for whitespace
-      if [ ${#names[$i]} -ge 2 ]; then
-        if [ "${1}" = "${names[$i]}" ]; then
+    # check for whitespace
+    if [ ${#names[$i]} -ge 2 ]; then
+      if [ "${1}" = "${names[$i]}" ]; then
           # call functions
           ${funcs[$i]} "${@:2}"
           return 0
         fi
-      fi
     fi
   done
 
@@ -62,17 +54,22 @@ gut() {
 
 # Displays help menu
 _gut_help() {
-  # get plugins
-  _gut_plugins
+  # get plugins from ENV
+  if [[ -n ${!GUT_ENV_FUNCTIONS} ]]; then
+    # no-op
+    echo -n ""
+  else
+    # get plugins
+    _gut_load_plugins
+  fi
 
   # backup IFS
   savedIFS=$IFS
-  IFS='"'
+  IFS=':'
 
-  # recreate array
-  funcs=($( echo "${GUT_FUNCTIONS[*]}"))
-  names=($( echo "${GUT_NAMES[*]}"))
-  descs=($( echo "${GUT_DESCRIPTIONS[*]}"))
+  funcs=($(echo "${!GUT_ENV_FUNCTIONS}"))
+  names=($(echo "${!GUT_ENV_NAMES}"))
+  descs=($(echo "${!GUT_ENV_DESCRIPTIONS}"))
 
   # restore IFS
   IFS=$savedIFS
@@ -83,14 +80,11 @@ _gut_help() {
   echo "commands:"
   echo ""
 
-  # Iterate over function names array
+  # iterate over array
   for i in "${!names[@]}"; do
-    # check for null strings
-    if [[ -n ${names[$i]} ]]; then
-      # check for whitespace
-      if [ ${#names[$i]} -ge 2 ]; then
-        _gut_column_echo "${names[$i]}" "${descs[$i]}" "20"
-      fi
+    # check for whitespace
+    if [ ${#names[$i]} -ge 2 ]; then
+      _gut_column_echo "${names[$i]}" "${descs[$i]}" "20"
     fi
   done
 
@@ -102,8 +96,8 @@ _gut_version() {
   echo "v${GUT_VER}"
 }
 
-# Get a list of plugins
-_gut_plugins() {
+# Load plugins in ${GUT_DIR}
+_gut_load_plugins() {
   local exclude=(" " "." ".." "gut.sh" "gut.bdb" "install.sh" "README.md")
   # Get file names
   local list=($(ls -al ${GUT_DIR} | awk '{ print $9 }'))
@@ -126,9 +120,9 @@ _gut_plugins() {
     fi
   done
 
-  declare -a gut_functions=()
-  declare -a gut_names=()
-  declare -a gut_descriptions=()
+  local gut_functions=""
+  local gut_names=""
+  local gut_descriptions=""
 
   # iterate over valid files
   for i in "${!files[@]}"; do
@@ -140,43 +134,142 @@ _gut_plugins() {
     local names=$(cat "${GUT_DIR}/${files[$i]}" | grep "GUT_EXPORT_NAMES")
     local descs=$(cat "${GUT_DIR}/${files[$i]}" | grep "GUT_EXPORT_DESCRIPTIONS")
 
+    # functions
     if [[ -n ${funcs} ]]; then
       local f=$(echo "${funcs}" | awk -F "[()]" '{print $2}')
-      gut_functions+=("${f}")
+
+      # backup IFS
+      savedIFS=$IFS
+      IFS='"'
+
+      # create array
+      a_functions=($(echo "${f}"))
+
+      # iterate over array
+      for i in "${!a_functions[@]}"; do
+        # check for null strings
+        if [[ -n ${a_functions[$i]} ]]; then
+          # check for whitespace
+          if [ ${#a_functions[$i]} -ge 2 ]; then
+            gut_functions="${gut_functions}:${a_functions[$i]}"
+          fi
+        fi
+      done
+
+      # restore IFS
+      IFS=$savedIFS
     fi
 
+    # names
     if [[ -n ${names} ]]; then
       local n=$(echo ${names} | awk -F "[()]" '{print $2}')
-      gut_names+=("${n}")
+
+      # backup IFS
+      savedIFS=$IFS
+      IFS='"'
+
+      # create array
+      a_names=($(echo "${n}"))
+
+      # iterate over array
+      for i in "${!a_names[@]}"; do
+        # check for null strings
+        if [[ -n ${a_names[$i]} ]]; then
+          # check for whitespace
+          if [ ${#a_names[$i]} -ge 2 ]; then
+            gut_names="${gut_names}:${a_names[$i]}"
+          fi
+        fi
+      done
+
+      # restore IFS
+      IFS=$savedIFS
     fi
 
+    # descriptions
     if [[ -n ${descs} ]]; then
       local d=$(echo ${descs} | awk -F "[()]" '{print $2}')
-      gut_descriptions+=("${d}")
+
+      # backup IFS
+      savedIFS=$IFS
+      IFS='"'
+
+      # create array
+      a_descriptions=($(echo "${d}"))
+
+      # iterate over array
+      for i in "${!a_descriptions[@]}"; do
+        # check for null strings
+        if [[ -n ${a_descriptions[$i]} ]]; then
+          # check for whitespace
+          if [ ${#a_descriptions[$i]} -ge 2 ]; then
+            gut_descriptions="${gut_descriptions}:${a_descriptions[$i]}"
+          fi
+        fi
+      done
+
+      # restore IFS
+      IFS=$savedIFS
     fi
   done
 
   # add version
-  gut_functions+=("_gut_version")
-  gut_names+=("version")
-  gut_descriptions+=("Displays the version of gut")
+  gut_functions="${gut_functions}:_gut_version"
+  gut_names="${gut_names}:version"
+  gut_descriptions="${gut_descriptions}:Displays the version of gut"
 
-  # override global vars
-  GUT_FUNCTIONS=("${gut_functions[@]}")
-  GUT_NAMES=("${gut_names[@]}")
-  GUT_DESCRIPTIONS=("${gut_descriptions[@]}")
+  # save to env
+  _gut_env_set "${GUT_ENV_FUNCTIONS}" "${gut_functions}"
+  _gut_env_set "${GUT_ENV_NAMES}" "${gut_names}"
+  _gut_env_set "${GUT_ENV_DESCRIPTIONS}" "${gut_descriptions}"
 }
 
 # Completion - Tab completion
 _gut_completion() {
+  # get plugins from ENV
+  if [[ -n ${!GUT_ENV_FUNCTIONS} ]]; then
+    # no-op
+    echo -n ""
+  else
+    # get plugins
+    _gut_load_plugins
+  fi
+
+  # backup IFS
+  savedIFS=$IFS
+  IFS=':'
+
+  funcs=($(echo "${!GUT_ENV_FUNCTIONS}"))
+  names=($(echo "${!GUT_ENV_NAMES}"))
+  descs=($(echo "${!GUT_ENV_DESCRIPTIONS}"))
+
+  # restore IFS
+  IFS=$savedIFS
+
+  local gut_completion=""
+
+  for i in "${!names[@]}"; do
+    # check for whitespace
+    if [ ${#names[$i]} -ge 2 ]; then
+      if [ ${i} -eq 1 ]; then
+        gut_completion="${names[$i]}"
+      else
+        gut_completion="${gut_completion} ${names[$i]}"
+      fi
+    fi
+  done
+
   local cur prev
 
   COMPREPLY=()
   cur="${COMP_WORDS[COMP_CWORD]}"
   prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-  COMPREPLY=( $(compgen -W "${_GUT_COMMANDS_COMPLETION}" -- ${cur}) )
+  COMPREPLY=( $(compgen -W "${gut_completion}" -- ${cur}) )
 
   return 0
 }
 complete -F _gut_completion gut
+
+# load gut
+_gut_load_plugins

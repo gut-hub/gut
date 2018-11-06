@@ -16,6 +16,7 @@ GUT_EXPORT_DESCRIPTIONS=("Updates gut")
 _gut_update() {
   _gut_update_download "gut-color.sh"
   _gut_update_download "gut-column.sh"
+  _gut_update_download "gut-env.sh"
   _gut_update_download "gut-git.sh"
   _gut_update_download "gut-kv.sh"
   _gut_update_download "gut-menu.sh"

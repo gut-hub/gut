@@ -45,6 +45,7 @@ copy_file() {
 
 copy_file "gut-color.sh"
 copy_file "gut-column.sh"
+copy_file "gut-env.sh"
 copy_file "gut-git.sh"
 copy_file "gut-kv.sh"
 copy_file "gut-menu.sh"

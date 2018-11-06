@@ -230,7 +230,11 @@ _gut_git_ps1_branch_current() {
     echo "${branch}"
   else
     # fallback
-    local ref=$(git symbolic-ref HEAD 2>/dev/null | awk -F refs/heads/ '{ print $2; }')
+    local ref=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+
+    if [[ "${ref}" == "HEAD" ]]; then
+      ref=$(git rev-parse --short HEAD)
+    fi
 
     if [[ -n ${ref} ]]; then
       echo "${ref}"
