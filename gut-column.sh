@@ -16,7 +16,7 @@ _gut_column_echo() {
   local col_two=${2}
   local col_mid=${3}
 
-  # get columns
+  # Get columns
   local cols=$(_gut_column_get)
   let start=-1;
   let one="${#col_one}"

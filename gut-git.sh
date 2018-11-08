@@ -229,7 +229,7 @@ _gut_git_ps1_branch_current() {
   if [[ -n ${branch} ]]; then
     echo "${branch}"
   else
-    # fallback
+    # Fallback
     local ref=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
 
     if [[ "${ref}" == "HEAD" ]]; then
@@ -243,30 +243,26 @@ _gut_git_ps1_branch_current() {
 }
 
 _gut_git_branch_ps1() {
-  # local variables to ref
   local branch; local sc; local su;
 
-  # determine if we're even in a valid branch
+  # Check for valid branch
   if branch=$(git rev-parse --abbrev-ref HEAD 2> /dev/null); then
-      # check for detatchment
+      # Check for detatchment
       if [[ "$branch" == "HEAD" ]]; then
-          # if so, set the branch to be the short hash
+          # Set the branch to be the short hash
           git_branch=" (#$(git rev-parse --short HEAD))"
       else
-          # figure out if any changes are staged
+          # Check for staged changes
           git diff --no-ext-diff --quiet || su="*"
           git diff --no-ext-diff --cached --quiet || sc="+"
-          # check if there's a need to separate state
+          # Check for separate state
           if [[ "$sc" != "" || "$su" != "" ]]; then
-              # set the branch with the state
               git_branch=" ($branch $su$sc)"
           else
-              # set the branch only
               git_branch=" ($branch)"
           fi
       fi
   else
-      # empty the name
       git_branch=""
   fi
 
@@ -283,7 +279,7 @@ _gut_git_status_short() {
   local unstaged="Changes not staged for commit"
   local untracked="Untracked files"
 
-  # check if output string contains keywords
+  # Check if output string contains keywords
   if [[ ${changes} == *${staged}* ]]; then
     echo -n "^"
   fi

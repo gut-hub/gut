@@ -69,7 +69,7 @@ _GUT_PS1_RESET='\[\e[0m\]'
 
 # Retrieves the gut color key from ENV
 _gut_color_get_env() {
-  # get color from ENV if found
+  # Get color from ENV if found
   if [[ ${GUT_COLOR_CODE} ]]; then
     echo "${GUT_COLOR_CODE}"
   else

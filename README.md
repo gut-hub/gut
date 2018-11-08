@@ -4,25 +4,30 @@ Collection of plugins that simplifies development workflow
 
 ## Core Plugins:
 * [gut](#gut) - Core component
+* [gut-cert](#gut-cert) - Certificate helpers
 * [gut-color](#gut-color) - ANSI/VT100 color helpers
 * [gut-column](#gut-column) - Creates text columns
 * [gut-env](#gut-env) - ENV store
 * [gut-git](#gut-git) - Git utilities
 * [gut-kv](#gut-kv) - Key/Value store
 * [gut-menu](#gut-menu) - Creates a selectable menu
+* [gut-time](#gut-time) - Unix timestamp helpers
+* [gut-update](#gut-update) - Updates gut
 
 ## Dependencies:
-* curl
 * awk
-* read
-* echo
 * base64
+* cat
+* curl
+* date
+* echo
 * git
 * grep
-* cat
+* openssl
+* read
+* sed
 * tr
 * wc
-* sed
 
 ## Install
 
@@ -66,6 +71,7 @@ Want to contribute to the project? Follow the style guide for submiting pull req
 * Variable assignments via functions are called using subshells: `local encoded_key=$(echo "${key}" | base64)`
 * Local variable names are written in lowercase
 * Global variable names are written in uppercase
+* Comments start with uppercase
 
 ### Docs
 

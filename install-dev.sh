@@ -43,12 +43,14 @@ copy_file() {
   cp "${1}" ${GUT_DIR}/${1}
 }
 
+copy_file "gut-cert.sh"
 copy_file "gut-color.sh"
 copy_file "gut-column.sh"
 copy_file "gut-env.sh"
 copy_file "gut-git.sh"
 copy_file "gut-kv.sh"
 copy_file "gut-menu.sh"
+copy_file "gut-time.sh"
 copy_file "gut-update.sh"
 copy_file "gut.sh"
 echo -e "${GRE}Copy complete${DEF}"

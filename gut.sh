@@ -11,16 +11,16 @@ GUT_ENV_DESCRIPTIONS="GUT_DESCS"
 # Main
 # @param {string} command - Command to execute
 gut() {
-  # get plugins from ENV
+  # Get plugins from ENV
   if [[ -n ${!GUT_ENV_FUNCTIONS} ]]; then
-    # no-op
+    # No-op
     echo -n ""
   else
-    # get plugins
+    # Get plugins
     _gut_load_plugins
   fi
 
-  # backup IFS
+  # Backup IFS
   savedIFS=$IFS
   IFS=':'
 
@@ -28,15 +28,15 @@ gut() {
   names=($(echo "${!GUT_ENV_NAMES}"))
   descs=($(echo "${!GUT_ENV_DESCRIPTIONS}"))
 
-  # restore IFS
+  # Restore IFS
   IFS=$savedIFS
 
-  # iterate over array
+  # Iterate over array
   for i in "${!names[@]}"; do
-    # check for whitespace
+    # Check for whitespace
     if [ ${#names[$i]} -ge 2 ]; then
       if [ "${1}" = "${names[$i]}" ]; then
-          # call functions
+          # Call functions
           ${funcs[$i]} "${@:2}"
           return 0
         fi
@@ -56,14 +56,14 @@ gut() {
 _gut_help() {
   # get plugins from ENV
   if [[ -n ${!GUT_ENV_FUNCTIONS} ]]; then
-    # no-op
+    # No-op
     echo -n ""
   else
-    # get plugins
+    # Get plugins
     _gut_load_plugins
   fi
 
-  # backup IFS
+  # Backup IFS
   savedIFS=$IFS
   IFS=':'
 
@@ -71,18 +71,18 @@ _gut_help() {
   names=($(echo "${!GUT_ENV_NAMES}"))
   descs=($(echo "${!GUT_ENV_DESCRIPTIONS}"))
 
-  # restore IFS
+  # Restore IFS
   IFS=$savedIFS
 
-  # displays plugins
+  # Displays plugins
   echo "usage: gut [command]"
   echo ""
   echo "commands:"
   echo ""
 
-  # iterate over array
+  # Iterate over array
   for i in "${!names[@]}"; do
-    # check for whitespace
+    # Check for whitespace
     if [ ${#names[$i]} -ge 2 ]; then
       _gut_column_echo "${names[$i]}" "${descs[$i]}" "20"
     fi
@@ -103,7 +103,7 @@ _gut_load_plugins() {
   local list=($(ls -al ${GUT_DIR} | awk '{ print $9 }'))
   declare -a files=()
 
-  # iterate over files in GUT_DIR
+  # Iterate over files in GUT_DIR
   for i in "${!list[@]}"; do
     # Don't add if the filename is in the exclude list
     let add=0;
@@ -124,7 +124,7 @@ _gut_load_plugins() {
   local gut_names=""
   local gut_descriptions=""
 
-  # iterate over valid files
+  # Iterate over valid files
   for i in "${!files[@]}"; do
     # Source the files
     source "${GUT_DIR}/${files[$i]}"
@@ -134,91 +134,91 @@ _gut_load_plugins() {
     local names=$(cat "${GUT_DIR}/${files[$i]}" | grep "GUT_EXPORT_NAMES")
     local descs=$(cat "${GUT_DIR}/${files[$i]}" | grep "GUT_EXPORT_DESCRIPTIONS")
 
-    # functions
+    # Functions
     if [[ -n ${funcs} ]]; then
       local f=$(echo "${funcs}" | awk -F "[()]" '{print $2}')
 
-      # backup IFS
+      # Backup IFS
       savedIFS=$IFS
       IFS='"'
 
-      # create array
+      # Create array
       a_functions=($(echo "${f}"))
 
-      # iterate over array
+      # Iterate over array
       for i in "${!a_functions[@]}"; do
-        # check for null strings
+        # Check for null strings
         if [[ -n ${a_functions[$i]} ]]; then
-          # check for whitespace
+          # Check for whitespace
           if [ ${#a_functions[$i]} -ge 2 ]; then
             gut_functions="${gut_functions}:${a_functions[$i]}"
           fi
         fi
       done
 
-      # restore IFS
+      # Restore IFS
       IFS=$savedIFS
     fi
 
-    # names
+    # Names
     if [[ -n ${names} ]]; then
       local n=$(echo ${names} | awk -F "[()]" '{print $2}')
 
-      # backup IFS
+      # Backup IFS
       savedIFS=$IFS
       IFS='"'
 
-      # create array
+      # Create array
       a_names=($(echo "${n}"))
 
-      # iterate over array
+      # Iterate over array
       for i in "${!a_names[@]}"; do
-        # check for null strings
+        # Check for null strings
         if [[ -n ${a_names[$i]} ]]; then
-          # check for whitespace
+          # Check for whitespace
           if [ ${#a_names[$i]} -ge 2 ]; then
             gut_names="${gut_names}:${a_names[$i]}"
           fi
         fi
       done
 
-      # restore IFS
+      # Restore IFS
       IFS=$savedIFS
     fi
 
-    # descriptions
+    # Descriptions
     if [[ -n ${descs} ]]; then
       local d=$(echo ${descs} | awk -F "[()]" '{print $2}')
 
-      # backup IFS
+      # Backup IFS
       savedIFS=$IFS
       IFS='"'
 
-      # create array
+      # Create array
       a_descriptions=($(echo "${d}"))
 
-      # iterate over array
+      # Iterate over array
       for i in "${!a_descriptions[@]}"; do
-        # check for null strings
+        # Check for null strings
         if [[ -n ${a_descriptions[$i]} ]]; then
-          # check for whitespace
+          # Check for whitespace
           if [ ${#a_descriptions[$i]} -ge 2 ]; then
             gut_descriptions="${gut_descriptions}:${a_descriptions[$i]}"
           fi
         fi
       done
 
-      # restore IFS
+      # Restore IFS
       IFS=$savedIFS
     fi
   done
 
-  # add version
+  # Add version
   gut_functions="${gut_functions}:_gut_version"
   gut_names="${gut_names}:version"
   gut_descriptions="${gut_descriptions}:Displays the version of gut"
 
-  # save to env
+  # Save to env
   _gut_env_set "${GUT_ENV_FUNCTIONS}" "${gut_functions}"
   _gut_env_set "${GUT_ENV_NAMES}" "${gut_names}"
   _gut_env_set "${GUT_ENV_DESCRIPTIONS}" "${gut_descriptions}"
@@ -226,16 +226,16 @@ _gut_load_plugins() {
 
 # Completion - Tab completion
 _gut_completion() {
-  # get plugins from ENV
+  # Get plugins from ENV
   if [[ -n ${!GUT_ENV_FUNCTIONS} ]]; then
-    # no-op
+    # No-op
     echo -n ""
   else
-    # get plugins
+    # Get plugins
     _gut_load_plugins
   fi
 
-  # backup IFS
+  # Backup IFS
   savedIFS=$IFS
   IFS=':'
 
@@ -243,13 +243,13 @@ _gut_completion() {
   names=($(echo "${!GUT_ENV_NAMES}"))
   descs=($(echo "${!GUT_ENV_DESCRIPTIONS}"))
 
-  # restore IFS
+  # Restore IFS
   IFS=$savedIFS
 
   local gut_completion=""
 
   for i in "${!names[@]}"; do
-    # check for whitespace
+    # Check for whitespace
     if [ ${#names[$i]} -ge 2 ]; then
       if [ ${i} -eq 1 ]; then
         gut_completion="${names[$i]}"
@@ -271,5 +271,5 @@ _gut_completion() {
 }
 complete -F _gut_completion gut
 
-# load gut
+# Load gut
 _gut_load_plugins
