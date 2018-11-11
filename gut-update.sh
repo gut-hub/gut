@@ -15,7 +15,6 @@ GUT_EXPORT_DESCRIPTIONS=("Updates gut")
 # Updates gut
 _gut_update() {
   echo -e "${YEL}Getting latest release${DEF}"
-  curl -s -u "username":"" https://api.github.com >/dev/null
 
   # Get latest release
   local release=$(curl -s https://api.github.com/repos/jareddlc/gut/releases/latest)
