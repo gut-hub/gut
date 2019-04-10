@@ -156,6 +156,18 @@ _gut_git_branch_from_remote_full() {
   echo "${git_branch}"
 }
 
+# Prints git branches that have already been merged
+_gut_git_branch_merged() {
+  local git_branch=$(git branch --merged |awk '{ $1=$1; print }' | tr -d "* ")
+  echo "${git_branch}"
+}
+
+# Prints git branches that have not already been merged
+_gut_git_branch_nomerged() {
+  local git_branch=$(git branch --no-merged |awk '{ $1=$1; print }' | tr -d "* ")
+  echo "${git_branch}"
+}
+
 # Prints the git log
 _gut_git_log() {
   local git_log=$(git log -n 25 --pretty=format:'%h - %s (%cd) <%an>')
@@ -178,6 +190,17 @@ _gut_git_remote_name() {
 _gut_git_remote_name_url() {
   local git_remote=$(git remote -v | grep push | awk '{ print $1,  "(" $2 ")" }')
   echo "${git_remote}"
+}
+
+_gut_git_remote_prune() {
+  # Fail if no remote name is provided
+  if [ -z "${1}" ]; then
+    echo "invalid parameter passed: _gut_git_remote_prune"
+    return -1
+  fi
+
+  # git remote prune origin --dry-run
+  local git_remote=$(git remote prune "${1}" --dry-run)
 }
 
 # Print the list of git remote urls

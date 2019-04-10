@@ -2,7 +2,7 @@
 
 # Vars
 GUT_DIR="${GUT_HOME:-$HOME/.gut}"
-GUT_VER="0.1.0"
+GUT_VER="0.2.0"
 
 GUT_ENV_FUNCTIONS="GUT_FUNCS"
 GUT_ENV_NAMES="GUT_NAMES"
@@ -245,7 +245,6 @@ _gut_completion() {
 
   # Restore IFS
   IFS=$savedIFS
-
   local gut_completion=""
 
   for i in "${!names[@]}"; do
@@ -259,15 +258,7 @@ _gut_completion() {
     fi
   done
 
-  local cur prev
-
-  COMPREPLY=()
-  cur="${COMP_WORDS[COMP_CWORD]}"
-  prev="${COMP_WORDS[COMP_CWORD-1]}"
-
-  COMPREPLY=( $(compgen -W "${gut_completion}" -- ${cur}) )
-
-  return 0
+  COMPREPLY=($(compgen -W "${gut_completion}" -- "${COMP_WORDS[COMP_CWORD]}"))
 }
 complete -F _gut_completion gut
 

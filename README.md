@@ -7,6 +7,7 @@ Collection of plugins that simplifies development workflow
 * [gut-cert](#gut-cert) - Certificate helpers
 * [gut-color](#gut-color) - ANSI/VT100 color helpers
 * [gut-column](#gut-column) - Creates text columns
+* [gut-docker](#gut-docker) - Docker helpers
 * [gut-env](#gut-env) - ENV store
 * [gut-git](#gut-git) - Git utilities
 * [gut-kv](#gut-kv) - Key/Value store
@@ -20,6 +21,7 @@ Collection of plugins that simplifies development workflow
 * cat
 * curl
 * date
+* docker
 * echo
 * git
 * grep

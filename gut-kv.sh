@@ -34,7 +34,6 @@ _gut_kv_set() {
   local store="${encoded_key}:${encoded_value}"
 
   # Check if file exists
-  local action=">"
   if [ ! -e "${file_path}" ]; then
     # File does not exist, store
     echo ${store} >> ${file_path}
@@ -75,7 +74,6 @@ _gut_kv_get() {
   fi
 
   # Check if file exists
-  local action=">"
   if [ ! -e "${file_path}" ]; then
     # File does not exist, return
     echo "[gut-kv-get] File does not exist"

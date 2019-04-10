@@ -28,3 +28,16 @@ _gut_column_echo() {
   echo -en "\033[${start}C${col_one}"
   echo -en "\033[${dif}C${col_two}\n\r"
 }
+
+# Displays a truncated input based on the COLUMN size
+# @param {string} input - Text input
+_gut_column_truncate() {
+  local input=${1}
+  local length=${#input}
+
+  if [[ "${#input}" -ge "${COLUMNS}" ]]; then
+    input=${input:0:${COLUMNS}}
+  fi
+
+  echo "${input}"
+}
