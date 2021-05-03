@@ -99,8 +99,16 @@ dependencies = [
 name = "gut"
 version = "0.1.0"
 dependencies = [
- "dirs",
+ "gut-lib",
  "libloading",
+ "serde_json",
+]
+
+[[package]]
+name = "gut-lib"
+version = "0.1.0"
+dependencies = [
+ "dirs",
  "serde_json",
  "termion",
  "unicode-segmentation",

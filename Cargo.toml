@@ -5,8 +5,7 @@ authors = ["Jared De La Cruz <jared@jareddlc.com>"]
 edition = "2018"
 
 [dependencies]
-dirs = "3"
 libloading = "0.7"
 serde_json = "1"
-termion = "1.5"
-unicode-segmentation = "1.7"
+
+gut-lib = { path = "/Users/jared/Development/gut-lib" }

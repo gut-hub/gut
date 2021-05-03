@@ -1,7 +1,7 @@
 use libloading::{Library, Symbol};
 use std::fs;
 
-use crate::gut;
+use crate::gut_lib;
 
 #[derive(Clone, Debug, Default)]
 pub struct Plugin {
@@ -78,7 +78,7 @@ impl Plugins {
 
     fn get_plugin_paths() -> Vec<String> {
         // read gut directory
-        let paths = match fs::read_dir(gut::get_gut_dir()) {
+        let paths = match fs::read_dir(gut_lib::dir::get_gut_dir()) {
             Ok(dir) => dir,
             Err(_) => panic!("Failed to read directory"),
         };

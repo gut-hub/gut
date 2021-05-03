@@ -1,7 +1,6 @@
+use gut_lib;
 use std::env;
 
-mod gut;
-mod input;
 mod plugin;
 
 use plugin::Plugins;
@@ -40,7 +39,7 @@ fn help(plugins: Plugins) {
         let descriptions = plugin.get_descriptions();
 
         for (i, _) in names.iter().enumerate() {
-            input::write_column(names[i].clone(), descriptions[i].clone(), None)
+            gut_lib::display::write_column(names[i].clone(), descriptions[i].clone(), None)
         }
     }
 }
