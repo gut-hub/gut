@@ -7,7 +7,6 @@ use crate::gut_lib;
 pub struct Plugin {
     descriptions: Vec<String>,
     functions: Vec<String>,
-    names: Vec<String>,
     path: String,
 }
 
@@ -18,10 +17,6 @@ impl Plugin {
 
     pub fn get_functions(&self) -> Vec<String> {
         self.functions.clone()
-    }
-
-    pub fn get_names(&self) -> Vec<String> {
-        self.names.clone()
     }
 }
 
@@ -43,27 +38,21 @@ impl Plugins {
                     library.get(b"gut_export_descriptions").unwrap();
                 let lib_export_functions: Symbol<unsafe fn() -> String> =
                     library.get(b"gut_export_functions").unwrap();
-                let lib_export_names: Symbol<unsafe fn() -> String> =
-                    library.get(b"gut_export_names").unwrap();
 
                 // invoke exported plugin functions
                 let descriptions_unparsed = lib_export_descriptions();
                 let functions_unparsed = lib_export_functions();
-                let names_unparsed = lib_export_names();
 
                 // parse data
                 let descriptions: Vec<String> = serde_json::from_str(&descriptions_unparsed)
                     .expect("Failed to parse plugin descriptions");
                 let functions: Vec<String> = serde_json::from_str(&functions_unparsed)
                     .expect("Failed to parse plugin functions");
-                let names: Vec<String> =
-                    serde_json::from_str(&names_unparsed).expect("Failed to parse plugin names");
 
                 // push to list of plugins
                 plugins.push(Plugin {
                     descriptions,
                     functions,
-                    names,
                     path,
                 });
             }
@@ -112,7 +101,7 @@ impl Plugins {
         // iterate over plugins
         for plugin in &self.plugins {
             // check each plugin for function
-            if plugin.names.contains(&name) {
+            if plugin.functions.contains(&name) {
                 unsafe {
                     // create plugin library
                     let library = Library::new(plugin.path.to_owned()).unwrap();

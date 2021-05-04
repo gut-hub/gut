@@ -35,7 +35,7 @@ fn help(plugins: Plugins) {
 
     // iterate over plugins
     for plugin in plugins.get_plugins() {
-        let names = plugin.get_names();
+        let names = plugin.get_functions();
         let descriptions = plugin.get_descriptions();
 
         for (i, _) in names.iter().enumerate() {
