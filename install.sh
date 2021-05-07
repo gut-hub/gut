@@ -35,10 +35,7 @@ url="${url#\"}"
 
 # Download
 echo -e "${YEL}Downloading: ${GRE}${url}${DEF}"
-curl -sSL "${url}" -o "${GUT_FILE}"
-
-# Move to gut directory
-mv "${GUT_FILE}" "${GUT_DIR}"
+curl -sSL "${url}" -o "${GUT_DIR}/${GUT_FILE}"
 chmod +x "${GUT_DIR}/${GUT_FILE}"
 echo -e "${YEL}Download complete: ${GRE}${GUT_DIR}/${GUT_FILE}${DEF}"
 
