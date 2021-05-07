@@ -33,11 +33,13 @@ impl Plugins {
         for path in Self::get_plugin_paths().into_iter() {
             unsafe {
                 // create plugin libraries
-                let library = Library::new(path.to_owned()).unwrap();
-                let lib_export_descriptions: Symbol<unsafe fn() -> String> =
-                    library.get(b"gut_export_descriptions").unwrap();
-                let lib_export_functions: Symbol<unsafe fn() -> String> =
-                    library.get(b"gut_export_functions").unwrap();
+                let library = Library::new(path.to_owned()).expect("Failed to create library");
+                let lib_export_descriptions: Symbol<unsafe fn() -> String> = library
+                    .get(b"gut_export_descriptions")
+                    .expect("Failed to create symbol library");
+                let lib_export_functions: Symbol<unsafe fn() -> String> = library
+                    .get(b"gut_export_functions")
+                    .expect("Failed to create symbol library");
 
                 // invoke exported plugin functions
                 let descriptions_unparsed = lib_export_descriptions();
@@ -97,18 +99,21 @@ impl Plugins {
         filtered
     }
 
-    pub fn invoke_plugin(&self, name: String) {
+    pub fn invoke_plugin(&self, name: String, argument: String) {
         // iterate over plugins
         for plugin in &self.plugins {
             // check each plugin for function
             if plugin.functions.contains(&name) {
                 unsafe {
                     // create plugin library
-                    let library = Library::new(plugin.path.to_owned()).unwrap();
-                    let lib_fn: Symbol<unsafe fn()> = library.get(name.as_bytes()).unwrap();
+                    let library =
+                        Library::new(plugin.path.to_owned()).expect("Failed to create library");
+                    let lib_fn: Symbol<unsafe fn(String)> = library
+                        .get(name.as_bytes())
+                        .expect("Failed to create symbol library");
 
                     // invoke exported plugin
-                    lib_fn();
+                    lib_fn(argument.clone());
                 }
             }
         }

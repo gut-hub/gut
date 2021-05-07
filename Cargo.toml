@@ -7,5 +7,4 @@ edition = "2018"
 [dependencies]
 libloading = "0.7"
 serde_json = "1"
-
-gut-lib = { path = "/Users/jared/Development/gut-lib" }
+gut-lib = "0.1"

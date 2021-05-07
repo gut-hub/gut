@@ -22,8 +22,14 @@ fn main() {
     } else if args[1] == "-h" {
         help(plugins);
     } else {
+        // passthrough argument to invoke plugin
+        let mut passthrough = "".to_string();
+        if args.len() > 2 && !args[2].is_empty() {
+            passthrough = args[2].clone();
+        }
+
         // invoke plugin
-        plugins.invoke_plugin(args[1].clone());
+        plugins.invoke_plugin(args[1].clone(), passthrough);
     }
 }
 
@@ -31,6 +37,9 @@ fn help(plugins: Plugins) {
     println!("usage: gut [command]");
     println!("");
     println!("commands:");
+    // default options
+    gut_lib::display::write_column("-h".to_string(), "Prints this message".to_string(), None);
+    gut_lib::display::write_column("-v".to_string(), "Prints the version".to_string(), None);
     println!("");
 
     // iterate over plugins
