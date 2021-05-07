@@ -8,5 +8,5 @@ This will create the gut directory: `$HOME/.gut`
 
 ```
 MacOS
-$ curl -sSL https://github.com/jareddlc/gut/raw/master/install.sh | sh
+$ curl -sSL https://github.com/gut-hub/gut/raw/master/install.sh | sh
 ```
