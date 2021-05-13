@@ -8,6 +8,8 @@ edition = "2018"
 libloading = "0.7"
 serde_json = "1"
 gut-lib = "0.1"
+wasmer = "1"
+wasmer-wasi = "1"
 
 [profile.release]
 codegen-units = 1

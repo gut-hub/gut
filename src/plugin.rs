@@ -1,5 +1,6 @@
-use libloading::{Library, Symbol};
 use std::fs;
+use wasmer::{Array, Instance, Memory, Module, NativeFunc, Store, Value, WasmPtr};
+use wasmer_wasi::WasiState;
 
 use crate::gut_lib;
 
@@ -31,33 +32,74 @@ impl Plugins {
 
         // iterate over all plugins
         for path in Self::get_plugin_paths().into_iter() {
-            unsafe {
-                // create plugin libraries
-                let library = Library::new(path.to_owned()).expect("Failed to create library");
-                let lib_export_descriptions: Symbol<unsafe fn() -> String> = library
-                    .get(b"gut_export_descriptions")
-                    .expect("Failed to create symbol library");
-                let lib_export_functions: Symbol<unsafe fn() -> String> = library
-                    .get(b"gut_export_functions")
-                    .expect("Failed to create symbol library");
+            // create default store
+            let store = Store::default();
 
-                // invoke exported plugin functions
-                let descriptions_unparsed = lib_export_descriptions();
-                let functions_unparsed = lib_export_functions();
+            // create module from plugin path
+            let module = Module::from_file(&store, &path).expect("Failed to load module");
 
-                // parse data
-                let descriptions: Vec<String> = serde_json::from_str(&descriptions_unparsed)
-                    .expect("Failed to parse plugin descriptions");
-                let functions: Vec<String> = serde_json::from_str(&functions_unparsed)
-                    .expect("Failed to parse plugin functions");
+            // create an environment
+            let mut wasi_env = WasiState::new("Gut")
+                .finalize()
+                .expect("Failed to create wasi env");
 
-                // push to list of plugins
-                plugins.push(Plugin {
-                    descriptions,
-                    functions,
-                    path,
-                });
-            }
+            // create imports
+            let import_object = wasi_env
+                .import_object(&module)
+                .expect("Failed to create import object");
+
+            // create instance of wasm plugin
+            let instance =
+                Instance::new(&module, &import_object).expect("Failed to create instance");
+
+            // create memory of the wasm plugin
+            let memory: &Memory = instance
+                .exports
+                .get_memory("memory")
+                .expect("Failed to get instance memory");
+
+            // define gut export functions
+            let functions: NativeFunc<(), WasmPtr<u8, Array>> = instance
+                .exports
+                .get_native_function("gut_export_functions")
+                .expect("Failed to define gut_export_functions");
+            let descriptions: NativeFunc<(), WasmPtr<u8, Array>> = instance
+                .exports
+                .get_native_function("gut_export_descriptions")
+                .expect("Failed to define gut_export_descriptions");
+
+            // invoke gut export functions
+            let functions_ptr: WasmPtr<u8, Array> = functions
+                .call()
+                .expect("Failed to call gut_export_functions");
+            let descriptions_ptr: WasmPtr<u8, Array> = descriptions
+                .call()
+                .expect("Failed to call gut_export_descriptions");
+
+            // get strings from memory
+            let functions_str = unsafe {
+                functions_ptr
+                    .get_utf8_str_with_nul(memory)
+                    .expect("Failed to get array from memory")
+            };
+            let descriptions_str = unsafe {
+                descriptions_ptr
+                    .get_utf8_str_with_nul(memory)
+                    .expect("Failed to get array from memory")
+            };
+
+            // parse json strings
+            let descriptions: Vec<String> = serde_json::from_str(&descriptions_str)
+                .expect("Failed to parse plugin descriptions");
+            let functions: Vec<String> =
+                serde_json::from_str(&functions_str).expect("Failed to parse plugin functions");
+
+            // push to list of plugins
+            plugins.push(Plugin {
+                descriptions,
+                functions,
+                path,
+            });
         }
 
         Plugins { plugins }
@@ -90,7 +132,7 @@ impl Plugins {
         let filtered: Vec<String> = plugin_paths
             .into_iter()
             .filter(|path| {
-                if path.contains(".dylib") {
+                if path.contains(".wasm") {
                     return true;
                 }
                 false
@@ -104,17 +146,45 @@ impl Plugins {
         for plugin in &self.plugins {
             // check each plugin for function
             if plugin.functions.contains(&name) {
-                unsafe {
-                    // create plugin library
-                    let library =
-                        Library::new(plugin.path.to_owned()).expect("Failed to create library");
-                    let lib_fn: Symbol<unsafe fn(String)> = library
-                        .get(name.as_bytes())
-                        .expect("Failed to create symbol library");
+                // create default store
+                let store = Store::default();
+                // create module from plugin path
+                let module =
+                    Module::from_file(&store, &plugin.path).expect("Failed to create module");
+                // create an environment
+                let mut wasi_env = WasiState::new("Gut")
+                    .finalize()
+                    .expect("Failed to create wasi env");
+                // create imports
+                let import_object = wasi_env
+                    .import_object(&module)
+                    .expect("Failed to create import object");
+                // create instance of wasm plugin
+                let instance =
+                    Instance::new(&module, &import_object).expect("Failed to create instance");
+                // create memory of the wasm plugin
+                let memory: &Memory = instance
+                    .exports
+                    .get_memory("memory")
+                    .expect("Failed to get instance memory");
+                // create function definition
+                let lib_fn = instance
+                    .exports
+                    .get_function(&name)
+                    .expect("Failed to get function");
 
-                    // invoke exported plugin
-                    lib_fn(argument.clone());
+                // write the string into the lineary memory
+                for (byte, cell) in argument
+                    .bytes()
+                    .zip(memory.view()[0 as usize..(argument.len()) as usize].iter())
+                {
+                    cell.set(byte);
                 }
+
+                // invoke function
+                lib_fn
+                    .call(&[Value::I32(0), Value::I32(argument.len() as _)])
+                    .expect("Failed to invoke function");
             }
         }
     }
