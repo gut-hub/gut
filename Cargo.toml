@@ -1,6 +1,6 @@
 [package]
 name = "gut"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Jared De La Cruz <jared@jareddlc.com>"]
 edition = "2018"
 
@@ -8,8 +8,8 @@ edition = "2018"
 libloading = "0.7"
 serde_json = "1"
 gut-lib = "0.1"
-wasmer = "1"
-wasmer-wasi = "1"
+wasmer = "2"
+wasmer-wasi = "2"
 
 [profile.release]
 codegen-units = 1

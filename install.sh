@@ -20,13 +20,12 @@ if [ ! -d "${GUT_DIR}" ]; then
   mkdir "${GUT_DIR}"
 fi
 
-echo -e "${YEL}Getting latest release${DEF}"
-curl -s -u "username":"" https://api.github.com >/dev/null
-
 # Get latest release
+echo -e "${YEL}Getting latest release${DEF}"
 release=$(curl -s https://api.github.com/repos/gut-hub/gut/releases/latest)
 version=$(echo "${release}" | grep "tag_name" | awk '{ print $2 }')
 url=$(echo "${release}" | grep "browser_download_url" | awk '{ print $2 }')
+url=$(echo "${url}" | awk '/gut"/')
 
 # Clean strings
 url="${url%?}"
