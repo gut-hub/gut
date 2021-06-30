@@ -20,12 +20,11 @@ Write-Output "Downloading: ${url}"
 Invoke-WebRequest -Uri "${url}" -OutFile "${GUT_DIR}\${GUT_FILE}"
 Write-Output  "Download complete: ${GUT_DIR}\${GUT_FILE}"
 
-
 # Add binary to PATH
 $oldpath = [System.Environment]::GetEnvironmentVariable('PATH','machine')
-$newpath = "$oldpath;${GUT_PATH};"
+$newpath = "$oldpath;${GUT_DIR}\;"
 
-If (-NOT ($oldpath -Contains $GUT_PATH)) {
+If (-NOT ($oldpath -like ${GUT_DIR})) {
   Write-Output "Adding gut to PATH"
   Write-Output "Please open a new terminal"
   [Environment]::SetEnvironmentVariable("PATH", "$newpath", [EnvironmentVariableTarget]::Machine)

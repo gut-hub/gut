@@ -12,6 +12,12 @@ This will create the gut directory: `$HOME/.gut`
 ```
 MacOS
 $ curl -sSL https://github.com/gut-hub/gut/raw/master/install.sh | sh
+
+Windows 10
++ Download install.ps1
++ Open powershell (Run as administrator)
+
+$ powershell.exe -ExecutionPolicy Bypass -File .\install.ps1
 ```
 
 ## Plugins
