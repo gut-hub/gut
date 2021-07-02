@@ -1,6 +1,7 @@
 use gut_lib;
 use std::env;
 
+mod download;
 mod plugin;
 
 use plugin::Plugins;
@@ -17,10 +18,12 @@ fn main() {
         return help(plugins);
     }
 
-    if args[1] == "-v" {
+    if args[1] == "-v" || args[1] == "version" {
         version();
-    } else if args[1] == "-h" {
+    } else if args[1] == "-h" || args[1] == "help" {
         help(plugins);
+    } else if args[1] == "-d" || args[1] == "download" {
+        download();
     } else {
         // passthrough argument to invoke plugin
         let mut passthrough = "".to_string();
@@ -38,8 +41,22 @@ fn help(plugins: Plugins) {
     println!("");
     println!("commands:");
     // default options
-    gut_lib::display::write_column("-h".to_string(), "Prints this message".to_string(), None);
-    gut_lib::display::write_column("-v".to_string(), "Prints the version".to_string(), None);
+    gut_lib::display::write_column(
+        "-h, help".to_string(),
+        "Prints this message".to_string(),
+        None,
+    );
+    gut_lib::display::write_column(
+        "-v, version".to_string(),
+        "Prints the version".to_string(),
+        None,
+    );
+    gut_lib::display::write_column(
+        "-d, download".to_string(),
+        "Download gut plugins".to_string(),
+        None,
+    );
+
     println!("");
 
     // iterate over plugins
@@ -55,4 +72,63 @@ fn help(plugins: Plugins) {
 
 fn version() {
     println!("{}", env!("CARGO_PKG_VERSION"));
+}
+
+fn download() {
+    // get list of gut plugins
+    let plugins = download::get_plugins();
+
+    // create display friendly array
+    let mut plugins_names = vec![];
+    for plugin in &plugins {
+        let name = match plugin["name"].as_str() {
+            Some(name) => name.to_string(),
+            None => panic!("Failed to get plugin name"),
+        };
+
+        let description = match plugin["description"].as_str() {
+            Some(description) => description.to_string(),
+            None => panic!("Failed to get plugin description"),
+        };
+
+        plugins_names.push(format!("{} - {}", name, description));
+    }
+
+    // prompt user for plugin selection
+    let selection = gut_lib::display::select_from_list(&plugins_names, None);
+
+    // crete display friendly array
+    let mut plugin_type = vec![];
+    if !&plugins[selection]["linux"].is_null() {
+        plugin_type.push("linux".to_string());
+    }
+    if !&plugins[selection]["macos"].is_null() {
+        plugin_type.push("macos".to_string());
+    }
+    if !&plugins[selection]["windows"].is_null() {
+        plugin_type.push("windows".to_string());
+    }
+    if !&plugins[selection]["wasm"].is_null() {
+        plugin_type.push("wasm".to_string());
+    }
+
+    // prompt user for plugin os
+    let selection_type = gut_lib::display::select_from_list(&plugin_type, None);
+
+    // get plugin info
+    let repo = match &plugins[selection]["repo"].as_str() {
+        Some(repo) => repo.to_string(),
+        None => panic!("Failed to get plugin repository"),
+    };
+    let release = match &plugins[selection]["release"].as_str() {
+        Some(release) => release.to_string(),
+        None => panic!("Failed to get plugin repository"),
+    };
+    let file_name = match &plugins[selection][&plugin_type[selection_type]].as_str() {
+        Some(name) => name.to_string(),
+        None => panic!("Failed to get plugin repository"),
+    };
+
+    // download plugin
+    download::download_plugin(repo, release, file_name);
 }

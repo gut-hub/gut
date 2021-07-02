@@ -1,6 +1,6 @@
 [package]
 name = "gut"
-version = "0.2.1"
+version = "0.2.2"
 authors = ["Jared De La Cruz <jared@jareddlc.com>"]
 edition = "2018"
 
@@ -8,6 +8,7 @@ edition = "2018"
 libloading = "0.7"
 serde_json = "1"
 gut-lib = "0.1"
+reqwest = { version = "0.11", features = ["blocking", "json"] }
 wasmer = "2"
 wasmer-wasi = "2"
 
