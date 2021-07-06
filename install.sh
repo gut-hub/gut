@@ -12,7 +12,10 @@ BASH_PROFILE="${HOME}/.bash_profile"
 BASH_RC="${HOME}/.bashrc"
 GUT_DIR="${HOME}/.gut"
 GUT_PATH='export PATH=$PATH:$HOME/.gut'
-GUT_FILE="gut"
+GUT_FILE="gut-linux"
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  GUT_FILE="gut-macos"
+fi
 
 # Create gut directory
 if [ ! -d "${GUT_DIR}" ]; then
@@ -25,7 +28,7 @@ echo -e "${YEL}Getting latest release${DEF}"
 release=$(curl -s https://api.github.com/repos/gut-hub/gut/releases/latest)
 version=$(echo "${release}" | grep "tag_name" | awk '{ print $2 }')
 url=$(echo "${release}" | grep "browser_download_url" | awk '{ print $2 }')
-url=$(echo "${url}" | awk '/gut"/')
+url=$(echo "${url}" | grep ${GUT_FILE})
 
 # Clean strings
 url="${url%?}"
@@ -34,9 +37,9 @@ url="${url#\"}"
 
 # Download
 echo -e "${YEL}Downloading: ${GRE}${url}${DEF}"
-curl -sSL "${url}" -o "${GUT_DIR}/${GUT_FILE}"
-chmod +x "${GUT_DIR}/${GUT_FILE}"
-echo -e "${YEL}Download complete: ${GRE}${GUT_DIR}/${GUT_FILE}${DEF}"
+curl -sSL "${url}" -o "${GUT_DIR}/gut"
+chmod +x "${GUT_DIR}/gut"
+echo -e "${YEL}Download complete: ${GRE}${GUT_DIR}/gut${DEF}"
 
 insert_source() {
   local dest=${1}
