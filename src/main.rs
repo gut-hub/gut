@@ -24,6 +24,8 @@ fn main() {
         help(plugins);
     } else if args[1] == "-d" || args[1] == "download" {
         download();
+    } else if args[1] == "-u" || args[1] == "update" {
+        update();
     } else {
         // passthrough argument to invoke plugin
         let mut passthrough = "".to_string();
@@ -53,7 +55,12 @@ fn help(plugins: Plugins) {
     );
     gut_lib::display::write_column(
         "-d, download".to_string(),
-        "Download gut plugins".to_string(),
+        "Shows a list of downloadble gut plugins".to_string(),
+        None,
+    );
+    gut_lib::display::write_column(
+        "-u, update".to_string(),
+        "Downloads the latest gut version".to_string(),
         None,
     );
 
@@ -72,6 +79,20 @@ fn help(plugins: Plugins) {
 
 fn version() {
     println!("{}", env!("CARGO_PKG_VERSION"));
+}
+
+fn update() {
+    // determine gut version to download
+    let mut file_name = "".to_string();
+    if env::consts::OS == "macos" {
+        file_name = "gut-macos".to_string();
+    } else if env::consts::OS == "linux" {
+        file_name = "gut-linux".to_string();
+    } else if env::consts::OS == "windows" {
+        file_name = "gut.exe".to_string();
+    }
+
+    download::download_gut(file_name);
 }
 
 fn download() {

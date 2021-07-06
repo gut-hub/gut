@@ -17,6 +17,30 @@ pub fn get_plugins() -> Vec<Value> {
   plugins.clone()
 }
 
+pub fn download_gut(file_name: String) {
+  // create download url
+  let download_url = format!(
+    "https://github.com/gut-hub/gut/releases/download/latest/{}",
+    file_name
+  );
+
+  let mut gut_file = file_name.clone();
+  if file_name.contains("-") {
+    gut_file = "gut".to_string();
+  }
+
+  // create file name
+  let file_path = format!("{}/{}", gut_lib::dir::get_gut_dir(), gut_file);
+
+  // download the file
+  println!("Downloading: {}", file_name);
+  let res = reqwest::blocking::get(download_url).expect("Failed to download plugins");
+  let data = res.bytes().expect("Failed to get plugin bytes");
+
+  // write the file
+  fs::write(&file_path, &data).expect("[CONF] Failed to write jinx_conf");
+}
+
 pub fn download_plugin(repo: String, release: String, file_name: String) {
   // create download url
   let download_url = format!("{}/releases/download/{}/{}", repo, release, file_name);
