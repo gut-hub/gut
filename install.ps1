@@ -13,7 +13,7 @@ If (-NOT (Test-Path -Path ${GUT_DIR})) {
 Write-Output "Getting latest release"
 $release = Invoke-RestMethod -URI https://api.github.com/repos/gut-hub/gut/releases/latest
 $version = ${release}.tag_name
-$url = ${release}.assets.browser_download_url[1]
+$url = Write-Output ${release}.assets.browser_download_url | Select-String -Pattern $GUT_FILE
 
 # Download
 Write-Output "Downloading: ${url}"
