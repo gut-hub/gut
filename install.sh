@@ -1,20 +1,31 @@
 #!/usr/bin/env bash
 
 # Colors
+RED="\033[0;31m"
 GRE="\033[0;32m"
 YEL="\033[0;33m"
 BLU="\033[0;34m"
 DEF="\033[0;39m"
 RES="\033[0m"
 
-# Vars
-BASH_PROFILE="${HOME}/.bash_profile"
-BASH_RC="${HOME}/.bashrc"
+# GUT
 GUT_DIR="${HOME}/.gut"
 GUT_PATH='export PATH=$PATH:$HOME/.gut'
+
+# Shells
+BASH_PROFILE="${HOME}/.bash_profile"
+BASH_RC="${HOME}/.bashrc"
+ZSH_PROFILE="${HOME}/.zprofile"
+ZSH_RC="${HOME}/.zshrc"
+
+# OS and Arch
+arch=$(uname -m)
 GUT_FILE="gut-linux"
 if [[ "$OSTYPE" == "darwin"* ]]; then
-  GUT_FILE="gut-macos"
+  GUT_FILE="gut-macos-x86"
+  if [[  "$arch" == "arm64"* ]]; then
+    GUT_FILE="gut-macos-aarch64"
+  fi
 fi
 
 # Create gut directory
@@ -52,13 +63,25 @@ insert_source() {
   echo -e "${BLU}    $ source ${dest}${DEF}"
 }
 
-# Add source information to .bash_profile or .bashrc
-if [ -e "${BASH_PROFILE}" ]; then
+# Add source to shell
+echo -e "${RED}Select a shell profile to add gut to PATH:${DEF}"
+echo -e "1) ${ZSH_PROFILE}"
+echo -e "2) ${ZSH_RC}"
+echo -e "3) ${BASH_PROFILE}"
+echo -e "4) ${BASH_RC}"
+echo -e "5) None"
+read -r input
+
+if [[ "$input" == "1" ]]; then
+  insert_source "${ZSH_PROFILE}"
+elif [[ "$input" == "2" ]]; then
+  insert_source "${ZSH_RC}"
+elif [[ "$input" == "3" ]]; then
   insert_source "${BASH_PROFILE}"
-elif [ -e "${BASH_RC}" ]; then
+elif [[ "$input" == "4" ]]; then
   insert_source "${BASH_RC}"
 else
-  echo -e "${YEL}Did not find a .bash_profile or .bashrc${DEF}"
-  echo -e "${YEL}To use gut, Please add gut directory to the PATH:${RES}"
-  echo -e "${BLU}source ${GUT_EXEC}"
+  echo -e "${YEL}gut not added to a shell profile.${DEF}"
+  echo -e "${YEL}To use gut, Please add gut directory to the PATH:${DEF}"
+  echo -e "${BLU}export PATH=\$PATH:\$HOME/.gut${DEF}"
 fi

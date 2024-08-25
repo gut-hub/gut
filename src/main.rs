@@ -85,7 +85,12 @@ fn update() {
     // determine gut version to download
     let mut file_name = "".to_string();
     if env::consts::OS == "macos" {
-        file_name = "gut-macos".to_string();
+        // check arch
+        if env::consts::ARCH == "aarch64" {
+            file_name = "gut-macos-aarch64".to_string();
+        } else {
+            file_name = "gut-macos-x86".to_string();
+        }
     } else if env::consts::OS == "linux" {
         file_name = "gut-linux".to_string();
     } else if env::consts::OS == "windows" {

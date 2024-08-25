@@ -5,6 +5,13 @@ Collection of plugins that simplifies development workflow
 * [gut-plugin](https://github.com/gut-hub/gut-plugin)
 * [gut-lib](https://github.com/gut-hub/gut-lib)
 
+## Supported OS
+
+* MacOs (x86)
+* MacOs (arm64)
+* Linux
+* Windows
+
 ## Install
 
 This will create the gut directory: `$HOME/.gut`
@@ -29,3 +36,7 @@ See [gut-plugin](https://github.com/gut-hub/gut-plugin)
 Helper library that provides common functionality for Gut
 
 See [gut-lib](https://github.com/gut-hub/gut-lib)
+
+## Develop
+
+__Note:__ The gut directory `$HOME/.gut` needs to exist.

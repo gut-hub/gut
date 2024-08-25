@@ -34,7 +34,7 @@ pub fn download_gut(file_name: String) {
 
   // download the file
   println!("Downloading: {}", file_name);
-  let res = reqwest::blocking::get(download_url).expect("Failed to download plugins");
+  let res = reqwest::blocking::get(download_url).expect("Failed to download gut");
   let data = res.bytes().expect("Failed to get plugin bytes");
 
   // write the file
