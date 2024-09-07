@@ -10,13 +10,15 @@ RES="\033[0m"
 
 # GUT
 GUT_DIR="${HOME}/.gut"
-GUT_PATH='export PATH=$PATH:$HOME/.gut'
 
 # Shells
 BASH_PROFILE="${HOME}/.bash_profile"
 BASH_RC="${HOME}/.bashrc"
 ZSH_PROFILE="${HOME}/.zprofile"
 ZSH_RC="${HOME}/.zshrc"
+
+BASH_PATH="export PATH=$PATH:$HOME/.gut"
+ZSH_PATH="path+=('$HOME/.gut')"
 
 # OS and Arch
 arch=$(uname -m)
@@ -52,36 +54,44 @@ curl -sSL "${url}" -o "${GUT_DIR}/gut"
 chmod +x "${GUT_DIR}/gut"
 echo -e "${YEL}Download complete: ${GRE}${GUT_DIR}/gut${DEF}"
 
-insert_source() {
+install_bash() {
   local dest=${1}
-  found=$(grep "${GUT_PATH}" "${dest}")
+  found=$(grep "${BASH_PATH}" "${dest}")
   if [ ! "${found}" ]; then
-    echo -e "${YEL}Adding PATH in: ${GRE}${dest}${DEF}"
-    echo "${GUT_PATH}" >> "${dest}"
+    echo -e "${YEL}Adding gut to PATH: ${GRE}${dest}${DEF}"
+    echo "${BASH_PATH}" >> "${dest}"
+    echo -e "${YEL}Please open a new terminal or source profile to use gut:${DEF}"
+    echo -e "${BLU}    $ source ${dest}${DEF}"
+  else
+    echo -e "${YEL}Gut already present in PATH: ${GRE}${dest}${DEF}"
   fi
-  echo -e "${YEL}Please open a new terminal or resource to use gut:${DEF}"
-  echo -e "${BLU}    $ source ${dest}${DEF}"
 }
 
-# Add source to shell
-echo -e "${RED}Select a shell profile to add gut to PATH:${DEF}"
-echo -e "1) ${ZSH_PROFILE}"
-echo -e "2) ${ZSH_RC}"
-echo -e "3) ${BASH_PROFILE}"
-echo -e "4) ${BASH_RC}"
-echo -e "5) None"
-read -r input
+install_zsh() {
+  local dest=${1}
+  found=$(grep "${ZSH_PATH}" "${dest}")
+  if [ ! "${found}" ]; then
+    echo -e "${YEL}Adding gut to PATH: ${GRE}${dest}${DEF}"
+    echo "${ZSH_PATH}" >> "${dest}"
+    echo "export PATH" >> "${dest}"
+    echo -e "${YEL}Please open a new terminal or source profile to use gut:${DEF}"
+    echo -e "${BLU}    $ source ${dest}${DEF}"
+  else
+    echo -e "${YEL}gut already present in PATH: ${GRE}${dest}${DEF}"
+  fi
+}
 
-if [[ "$input" == "1" ]]; then
-  insert_source "${ZSH_PROFILE}"
-elif [[ "$input" == "2" ]]; then
-  insert_source "${ZSH_RC}"
-elif [[ "$input" == "3" ]]; then
-  insert_source "${BASH_PROFILE}"
-elif [[ "$input" == "4" ]]; then
-  insert_source "${BASH_RC}"
+# Add gut to shell profile
+if [ -e "${ZSH_PROFILE}" ]; then
+  install_zsh "${ZSH_PROFILE}"
+elif [ -e "${ZSH_RC}" ]; then
+  install_zsh "${ZSH_RC}"
+elif [ -e "${BASH_PROFILE}" ]; then
+ install_bash "${BASH_PROFILE}"
+elif [ -e "${BASH_RC}" ]; then
+ install_bash "${BASH_RC}"
 else
-  echo -e "${YEL}gut not added to a shell profile.${DEF}"
+  echo -e "${YEL}gut was not added to a shell profile.${DEF}"
   echo -e "${YEL}To use gut, Please add gut directory to the PATH:${DEF}"
-  echo -e "${BLU}export PATH=\$PATH:\$HOME/.gut${DEF}"
+  echo -e "${BLU}${GUT_DIR}{DEF}"
 fi
