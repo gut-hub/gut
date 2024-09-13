@@ -128,8 +128,11 @@ fn download() {
     if !&plugins[selection]["linux"].is_null() {
         plugin_type.push("linux".to_string());
     }
-    if !&plugins[selection]["macos"].is_null() {
-        plugin_type.push("macos".to_string());
+    if !&plugins[selection]["macos-aarch64"].is_null() {
+        plugin_type.push("macos-aarch64".to_string());
+    }
+    if !&plugins[selection]["macos-x86"].is_null() {
+        plugin_type.push("macos-x86".to_string());
     }
     if !&plugins[selection]["windows"].is_null() {
         plugin_type.push("windows".to_string());
