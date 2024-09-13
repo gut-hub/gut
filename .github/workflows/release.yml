@@ -13,7 +13,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Build
       run: cargo build --release
@@ -22,7 +22,7 @@ jobs:
       run: mv target/release/gut target/release/gut-linux
 
     - name: Upload Linux Artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: linux-binary
         path: target/release/gut-linux
@@ -32,13 +32,13 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Build
       run: cargo build --release
 
     - name: Upload Windows Artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: windows-binary
         path: target\release\gut.exe
@@ -48,7 +48,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Build
       run: cargo build --release
@@ -57,7 +57,7 @@ jobs:
       run: mv target/release/gut target/release/gut-macos-x86
 
     - name: Upload MacOS Artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: macos-x86-binary
         path: target/release/gut-macos-x86
@@ -67,7 +67,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Build
       run: cargo build --release
@@ -76,7 +76,7 @@ jobs:
       run: mv target/release/gut target/release/gut-macos-aarch64
 
     - name: Upload MacOS Artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: macos-aarch64-binary
         path: target/release/gut-macos-aarch64
@@ -87,19 +87,19 @@ jobs:
 
     steps:
     - name: Download Linux Artifact
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: linux-binary
     - name: Download Windows Artifact
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: windows-binary
     - name: Download MacOS (x86) Artifact
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: macos-x86-binary
     - name: Download MacOS (Arm64) Artifact
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: macos-aarch64-binary
 
