@@ -1,6 +1,6 @@
 [package]
 name = "gut"
-version = "0.3.0"
+version = "0.3.1"
 authors = ["Jared De La Cruz <jared@jareddlc.com>"]
 edition = "2018"
 
@@ -11,7 +11,7 @@ gut-lib = "0.1"
 reqwest = { version = "0.12", features = ["blocking"] }
 tokio = "1"
 wasmer = "4"
-wasmer-wasix = "0.26"
+wasmer-wasix = "0.27"
 
 [profile.release]
 codegen-units = 1
